@@ -1,0 +1,19 @@
+@import './colors.scss';
+
+@font-face {
+  font-family: 'Pexico';
+  src: url('./Pexico-Regular.woff2') format('woff2');
+  src: url('./Pexico-Regular.woff') format('woff');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: $grayDarkest;
+  font-family: 'Pexico';
+  font-smooth: subpixel-antialiased;
+}
