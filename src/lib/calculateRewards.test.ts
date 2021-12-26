@@ -1,6 +1,6 @@
 import BigNumber from "bignumber.js";
 import log from "loglevel";
-import config from "src/config";
+import config from "./../config";
 import {
   calculateCurrentContributionReward,
   calculateDillutionMultiplier,
