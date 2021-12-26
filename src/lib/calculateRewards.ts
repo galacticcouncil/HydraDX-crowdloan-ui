@@ -28,6 +28,9 @@ import config from 'src/config';
  * for each contribution calculate the following
  * contributionReward: -||-
  * dillutedContributionReward: calculateMinimalDillutedContributionReward <-- contributionReward
+ * 
+ * for dynamic (from contribution form) reward calculation, use the same as above, but only for the contribution
+ * values provided within the form
  */
 
 const reimbursmentMultiplierScale = simpleLinearScale(

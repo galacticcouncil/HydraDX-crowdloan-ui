@@ -13,7 +13,7 @@ import {
 
 log.setLevel("INFO");
 
-describe.only("calculateCurrentRewards", () => {
+describe("calculateCurrentRewards", () => {
   describe("calculateReimbursmentMultiplier", () => {
     // [leadPercentageRate, reimbursmentMultiplier]
     const dataset = [
