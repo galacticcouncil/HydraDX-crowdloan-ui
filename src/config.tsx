@@ -1,10 +1,4 @@
 import BigNumber from "bignumber.js";
-import { toKsmPrecision } from './utils';
-import ksmPrecision from "./ksmPrecision";
-
-export const precisionMultiplierBN = new BigNumber('10').pow('6');
-export const ksmPrecisionMultiplierBN = new BigNumber('10').pow('12');
-
 
 const config = {
 
