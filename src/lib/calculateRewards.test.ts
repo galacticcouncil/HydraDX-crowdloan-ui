@@ -109,7 +109,7 @@ describe("calculateCurrentRewards", () => {
     );
   });
 
-  describe("calculateCurrentContributionReward", () => {
+  describe.only("calculateCurrentContributionReward", () => {
     const dataset = [
       // [dotAmount, leadPercentageRate, hdxAmount]
       ["10", 15, "2788"],
@@ -120,6 +120,7 @@ describe("calculateCurrentRewards", () => {
       // out of bounds cases
       ["1", 10, "279"],
       ["1", 30, "28"],
+      ["1", -10, "279"],
     ];
 
     it.each(dataset)(

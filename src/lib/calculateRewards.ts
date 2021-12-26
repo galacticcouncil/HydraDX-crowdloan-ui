@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import log from 'loglevel';
 import simpleLinearScale from 'simple-linear-scale';
-import config from 'src/config';
+import config from './../config';
 
 /**
  * This file contains the Hydra crowdloan incentive implementation,
