@@ -1,4 +1,4 @@
-# Basilisk crowdloan dashboard
+# HydraDX crowdloan dashboard
 
 Dashboard allowing to contribute into crowdloan, track rewards and race. React app connected to the Polkadot node and Subsquid query node.
 
