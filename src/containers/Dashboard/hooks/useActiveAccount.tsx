@@ -16,7 +16,6 @@ export const useActiveAccount = () => {
     }, [activeAccountAddress, getAllAccounts]);
 
     const activeAccount = useMemo(() => {
-        console.log('allAccounts', allAccounts, activeAccountAddress);
         return find(allAccounts, { address: activeAccountAddress });
     }, [activeAccountAddress, allAccounts]);
 

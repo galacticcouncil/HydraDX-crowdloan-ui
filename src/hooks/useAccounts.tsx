@@ -55,11 +55,9 @@ export const useAccounts = () => {
         // only do this in case there is an active account set
         // this will trigger the extension connection popup as well if required
         // this will refetch all the balances, but it will also refetch account names
-        activeAccountAddress && getAllAccounts();
+        getAllAccounts();
     }, [activeAccountAddress, getAllAccounts, latestBlockHeight]);
     
-    console.log('activeAccountAddress', activeAccountAddress);
-
     return {
         activeAccountAddress,
         setActiveAccountAddress,

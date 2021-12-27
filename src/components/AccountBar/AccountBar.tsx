@@ -6,8 +6,9 @@ import { initial } from 'lodash';
 
 export interface AccountBarProps {
     account?: Account,
-    loading: boolean,
+    activeAccountLoading: boolean,
     initiallyLoaded: boolean,
+    apiReady: boolean, 
     accounts?: Account[],
     getAllAccounts: () => void,
     setActiveAccountAddress: (accountAddress: string) => void,
@@ -17,19 +18,21 @@ export interface AccountBarProps {
 
 export const AccountBar = ({ 
     account, 
-    loading,
+    activeAccountLoading,
     initiallyLoaded,
     accounts,
     setActiveAccountAddress,
     chainBlockHeight,
     processorBlockHeight,
-    getAllAccounts
+    getAllAccounts,
+    apiReady
 }: AccountBarProps) => {
     const [showSelector, setShowSelector] = useState(false);
     const accountSelectorRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (!showSelector) return;
+        console.log('loading accounts');
         getAllAccounts();
     }, [showSelector, getAllAccounts]);
 
@@ -69,11 +72,21 @@ export const AccountBar = ({
             }
         </div>
         <div>
-            <p>Loading: {loading ? 'loading' : 'not loading'}</p>
+            <p>activeAccountLoading: {activeAccountLoading ? 'loading' : 'not loading'}</p>
             <p>Initially loaded: {initiallyLoaded ? 'already loaded' : 'not yet'}</p>
             <p>{chainBlockHeight} / {processorBlockHeight}</p>
             <p>{account?.address} | {account?.balance} | {account?.name}</p>
-            <button onClick={_ => setShowSelector(true)}>Connect account</button>
+            
+            <button onClick={_ => setShowSelector(true)}>
+                {!apiReady
+                    ? 'Loading...'
+                    : (
+                        account
+                            ? 'Change account'
+                            : 'Connect account'
+                    )
+                }
+            </button>
         </div>
     </div>
 }

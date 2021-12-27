@@ -3,13 +3,13 @@ import { useAccountsContext } from 'src/hooks/useAccounts';
 import { useInitialData } from 'src/hooks/useInitialData';
 import { useLatestBlockHeight } from 'src/hooks/useLatestBlockHeight';
 import { useSiblingData } from 'src/hooks/useSiblingData';
-import { useLoading } from './hooks/useLoading';
 import { AccountBar } from 'src/components/AccountBar/AccountBar';
 import { useActiveAccount } from './hooks/useActiveAccount';
+import { usePolkadotJsContext } from 'src/hooks/usePolkadotJs';
 
 export const Dashboard = () => {
     const blockHeight = useLatestBlockHeight();
-    const loading = useLoading();
+    const api = usePolkadotJsContext();
 
     const { 
         activeAccount, 
@@ -42,16 +42,19 @@ export const Dashboard = () => {
     // } = useSiblingData(incentive?.siblingParachain?.id)
 
     return <>
-        <AccountBar 
-            account={activeAccount} 
-            accounts={allAccounts}
-            getAllAccounts={getAllAccounts}
-            loading={activeAccountLoading}
-            initiallyLoaded={accountsInitiallyLoaded}
-            setActiveAccountAddress={setActiveAccountAddress}
-            chainBlockHeight={blockHeight}
-            processorBlockHeight={incentive?.blockHeight}
-        />
+        <div>
+            <AccountBar 
+                account={activeAccount} 
+                accounts={allAccounts}
+                getAllAccounts={getAllAccounts}
+                activeAccountLoading={activeAccountLoading}
+                initiallyLoaded={accountsInitiallyLoaded}
+                setActiveAccountAddress={setActiveAccountAddress}
+                chainBlockHeight={blockHeight}
+                processorBlockHeight={incentive?.blockHeight}
+                apiReady={!!api}
+            />
+        </div>
     </>
 
     // return (<>
