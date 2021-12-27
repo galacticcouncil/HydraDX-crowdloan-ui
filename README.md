@@ -1,6 +1,6 @@
 # Basilisk crowdloan dashboard
 
-Dashboard allowing to contribute into crowdloan, track rewards and race. React app connected to the Kusama node and Subsquid query node.
+Dashboard allowing to contribute into crowdloan, track rewards and race. React app connected to the Polkadot node and Subsquid query node.
 
 ## Develop
 
