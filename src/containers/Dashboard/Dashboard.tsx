@@ -6,6 +6,9 @@ import { useSiblingData } from 'src/hooks/useSiblingData';
 import { AccountBar } from 'src/components/AccountBar/AccountBar';
 import { useActiveAccount } from './hooks/useActiveAccount';
 import { usePolkadotJsContext } from 'src/hooks/usePolkadotJs';
+import { ContributionForm } from 'src/components/AccountBar/ContributionForm';
+import { useHandleCrowdloanContribute } from './hooks/useHandleCrowdloanContribute';
+import { useState } from 'react';
 
 export const Dashboard = () => {
     const blockHeight = useLatestBlockHeight();
@@ -30,11 +33,17 @@ export const Dashboard = () => {
         ownHistoricalFundsPledged
     } = useInitialData();
 
-    // const {
-    //     loading: accountDataLoading,
-    //     contributions,
-    //     accountRewards,
-    // } = useAccountData(incentive?.totalRewardsDistributed);
+    const {
+        loading: accountDataLoading,
+        contributions,
+        accountTotalRewards,
+        accountTotalContribution,
+    } = useAccountData(incentive?.totalRewardsDistributed);
+
+    const handleCrowdloanContribute = useHandleCrowdloanContribute();
+
+    const [showAccountSelector, setShowAccountSelector] = useState(false);
+
 
     // const {
     //     loading: siblingDataLoading,
@@ -53,6 +62,21 @@ export const Dashboard = () => {
                 chainBlockHeight={blockHeight}
                 processorBlockHeight={incentive?.blockHeight}
                 apiReady={!!api}
+                showAccountSelector={showAccountSelector}
+                setShowAccountSelector={setShowAccountSelector}
+            />
+        </div>
+
+        <div>
+            {/* graph */}
+            {/* form */}
+            <ContributionForm 
+                totalContributionAmount={accountTotalContribution}
+                totalRewards={accountTotalRewards}
+                onContribute={handleCrowdloanContribute}
+                apiReady={!!api}
+                activeAccount={activeAccount}
+                setShowAccountSelector={setShowAccountSelector}
             />
         </div>
     </>

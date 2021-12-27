@@ -9,6 +9,7 @@ log.setLevel('DEBUG');
 
 export interface AccountDataQueryResponse {
     contributions: {
+        balance: string,
         contributionReward: string
     }[]
 }
@@ -16,6 +17,7 @@ export interface AccountDataQueryResponse {
 export const ACCOUNT_DATA_QUERY = gql`
     query AccountData($accountId: String!) {
         contributions(where: {account: {accountId_eq: $accountId}}){
+            balance
             contributionReward
         }
     }
@@ -30,7 +32,7 @@ export const useAccountData = (totalRewardsDistributed?: string) => {
             nextFetchPolicy: 'no-cache'
         }
     );
-    const accountRewards = useMemo(() => {
+    const accountTotalRewards = useMemo(() => {
         if (!totalRewardsDistributed || !data) return;
 
         const totalRewards = data.contributions.reduce((totalRewards, contribution) => (
@@ -47,6 +49,12 @@ export const useAccountData = (totalRewardsDistributed?: string) => {
 
         return rewards;
     }, [data, totalRewardsDistributed]);
+
+    const accountTotalContribution = useMemo(() => {
+        return data?.contributions.reduce((totalContribution, contribution) => {
+            return totalContribution.plus(contribution.balance)
+        }, new BigNumber(0));
+    }, [data]);
 
     useEffect(() => {
         if (!activeAccountAddress) return;
@@ -65,7 +73,8 @@ export const useAccountData = (totalRewardsDistributed?: string) => {
 
     return {
         ...data,
-        accountRewards,
+        accountTotalRewards,
+        accountTotalContribution,
         loading,
         networkStatus
     }

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Account, useAccountsContext } from 'src/hooks/useAccounts';
+import { Account } from 'src/hooks/useAccounts';
 import { useClickAway } from 'react-use';
 import './AccountBar.scss';
 import { initial } from 'lodash';
@@ -13,7 +13,9 @@ export interface AccountBarProps {
     getAllAccounts: () => void,
     setActiveAccountAddress: (accountAddress: string) => void,
     processorBlockHeight?: string,
-    chainBlockHeight?: string
+    chainBlockHeight?: string,
+    showAccountSelector: boolean,
+    setShowAccountSelector: (showAccountSelector: boolean) => void
 }
 
 export const AccountBar = ({ 
@@ -25,29 +27,30 @@ export const AccountBar = ({
     chainBlockHeight,
     processorBlockHeight,
     getAllAccounts,
-    apiReady
+    apiReady,
+    showAccountSelector,
+    setShowAccountSelector
 }: AccountBarProps) => {
-    const [showSelector, setShowSelector] = useState(false);
     const accountSelectorRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        if (!showSelector) return;
+        if (!showAccountSelector) return;
         console.log('loading accounts');
         getAllAccounts();
-    }, [showSelector, getAllAccounts]);
+    }, [showAccountSelector, getAllAccounts]);
 
-    useClickAway(accountSelectorRef, () => setShowSelector(false));
+    useClickAway(accountSelectorRef, () => setShowAccountSelector(false));
 
     const handleSelectActiveAccount = useCallback((account: Account) => {
         setActiveAccountAddress(account.address);
-        setShowSelector(false);
-    }, [setActiveAccountAddress]);
+        setShowAccountSelector(false);
+    }, [setActiveAccountAddress, setShowAccountSelector]);
 
     return <div>
-        <p>Show selector?: {showSelector ? 'true' : 'false'}</p>
+        <p>Show account selector?: {showAccountSelector ? 'true' : 'false'}</p>
         <div
             ref={accountSelectorRef} 
-            className={showSelector ? 'visible': 'hidden'}>
+            className={showAccountSelector ? 'visible': 'hidden'}>
             {
                 accounts?.length
                     ? (
@@ -77,7 +80,7 @@ export const AccountBar = ({
             <p>{chainBlockHeight} / {processorBlockHeight}</p>
             <p>{account?.address} | {account?.balance} | {account?.name}</p>
             
-            <button onClick={_ => setShowSelector(true)}>
+            <button onClick={_ => setShowAccountSelector(true)}>
                 {!apiReady
                     ? 'Loading...'
                     : (
