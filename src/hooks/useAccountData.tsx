@@ -35,7 +35,7 @@ export const useAccountData = (totalRewardsDistributed?: string) => {
     const accountTotalRewards = useMemo(() => {
         if (!totalRewardsDistributed || !data) return;
 
-        const totalRewards = data.contributions.reduce((totalRewards, contribution) => (
+        const totalRewards = data.contributions?.reduce((totalRewards, contribution) => (
             totalRewards.plus(contribution.contributionReward)
         ), new BigNumber(0)); // TODO: this is dangerous
 

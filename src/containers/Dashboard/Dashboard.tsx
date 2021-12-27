@@ -40,15 +40,18 @@ export const Dashboard = () => {
         accountTotalContribution,
     } = useAccountData(incentive?.totalRewardsDistributed);
 
-    const handleCrowdloanContribute = useHandleCrowdloanContribute();
+    const {
+        handleCrowdloanContribute,
+        contributionStatus
+    } = useHandleCrowdloanContribute();
 
     const [showAccountSelector, setShowAccountSelector] = useState(false);
 
 
-    // const {
-    //     loading: siblingDataLoading,
-    //     siblingHistoricalFundsPledged,
-    // } = useSiblingData(incentive?.siblingParachain?.id)
+    const {
+        loading: siblingDataLoading,
+        siblingHistoricalFundsPledged,
+    } = useSiblingData(incentive?.siblingParachain?.id)
 
     return <>
         <div>
@@ -77,6 +80,8 @@ export const Dashboard = () => {
                 apiReady={!!api}
                 activeAccount={activeAccount}
                 setShowAccountSelector={setShowAccountSelector}
+                contributionStatus={contributionStatus}
+                incentive={incentive}
             />
         </div>
     </>
