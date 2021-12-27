@@ -56,6 +56,8 @@ export const useAccountData = (totalRewardsDistributed?: string) => {
             }
         };
 
+        console.log('active account address changed', activeAccountAddress);
+
         !refetch
             ? fetchAccountData(params)
             : refetch(params)

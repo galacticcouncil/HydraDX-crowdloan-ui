@@ -14,11 +14,12 @@ export interface Account {
 }
 
 export const useAccounts = () => {
-    const [activeAccountAddress, setActiveAccountAddress] = useLocalStorage<string | undefined>('hdx-crowdloan-account', '15XTRN1L358UcKEJooL16uVnsu4hYtEVFwptTuZLaMrkFv6d');
+    const [activeAccountAddress, setActiveAccountAddress] = useLocalStorage<string | undefined>('hdx-crowdloan-account');
     const [allAccounts, setAllAccounts] = useState<Account[]>([]);
     const api = usePolkadotJsContext();
     const [loading, setLoading] = useState(false);
     const latestBlockHeight = useLatestBlockHeightContext();
+    const [initiallyLoaded, setInitiallyLoaded] = useState(false);
 
     const getAllAccounts = useCallback(() => {
         if (!api) return;
@@ -45,8 +46,9 @@ export const useAccounts = () => {
 
             setAllAccounts(accountsWithBalances);
             setLoading(false);
+            setInitiallyLoaded(true);
         })();
-    }, [setAllAccounts, setLoading, api]);
+    }, [setAllAccounts, setLoading, api, setInitiallyLoaded]);
 
     // refetch active account balance with every new block, or when the active account changes
     useEffect(() => {
@@ -63,7 +65,8 @@ export const useAccounts = () => {
         setActiveAccountAddress,
         getAllAccounts,
         allAccounts,
-        loading
+        loading,
+        initiallyLoaded
     }
 }
 
