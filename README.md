@@ -7,13 +7,13 @@ Dashboard allowing to contribute into crowdloan, track rewards and race. React a
 Install dependencies
 
 ```
-npm install
+yarn install
 ```
 
 Run locally with livereload
 
 ```
-npm run start
+yarn run start
 ```
 
 ### Release
