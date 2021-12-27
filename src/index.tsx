@@ -4,7 +4,7 @@ import './index.scss';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import log, { LogLevelDesc } from 'loglevel'
-import linearScale from 'simple-linear-scale';
+import 'simple-linear-scale';
 
 // <reference types="simple-linear-scale.d.ts">
 

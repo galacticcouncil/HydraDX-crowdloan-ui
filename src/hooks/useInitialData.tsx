@@ -1,94 +1,64 @@
-import BigNumber from "bignumber.js";
-import { initial } from "lodash";
-import log from "loglevel";
-import { useEffect } from "react";
-import { precisionMultiplierBN } from "src/config";
-import { ActionType } from "src/containers/store/Actions";
-import { useDispatch, useIsInitialDataLoaded, useIsInitialDataLoading } from "src/containers/store/Store"
-import { useInitialDataQuery } from "./useQueries";
+import { gql, useLazyQuery } from '@apollo/client'
+import { useEffect } from 'react';
+import config from 'src/config';
+import { useLatestBlockHeightContext } from './useLatestBlockHeight';
+
+export interface InitialDataQueryResponse {
+    incentive?: {
+        totalRewardsDistributed: string,
+        leadPercentageRate: string,
+        blockHeight: string,
+        siblingParachain?: {
+            id?: string
+        }
+    },
+    ownHistoricalFundsPledged: {
+        fundsPledged: string,
+        createdAt: string,
+    }[]
+}
+
+export const INITIAL_DATA_QUERY = gql`
+    query InitialData($ownParaId: ID!) {
+        incentive: incentiveById(id: "incentive") {
+            totalRewardsDistributed
+            leadPercentageRate
+            blockHeight,
+            siblingParachain {
+                id
+            }
+        }
+
+        # TODO: add fetching only of 3 days old data using the block height filter
+        ownHistoricalFundsPledged: historicalParachainFundsPledgeds(where: {parachain: {id_eq: $ownParaId}}) {
+            fundsPledged,
+            # TODO: add createdAt for graph
+        }
+    }
+`
 
 export const useInitialData = () => {
-    const dispatch = useDispatch();
-    const isInitialDataLoading = useIsInitialDataLoading();
-    const isInitialDataLoaded = useIsInitialDataLoaded();
-    const [getInitialData, initialData] = useInitialDataQuery()
-
-    // load initial data only once
+    const latestBlockHeight = useLatestBlockHeightContext();
+    const [fetchInitialData, { data, loading, networkStatus, refetch }] = useLazyQuery<InitialDataQueryResponse>(
+        INITIAL_DATA_QUERY, 
+        { 
+            notifyOnNetworkStatusChange: true,
+            variables: {
+                ownParaId: config.ownParaId
+            },
+            nextFetchPolicy: 'no-cache'
+        }
+    );
+    
     useEffect(() => {
-        log.debug('useInitialData', 'loading')
-        dispatch({
-            type: ActionType.LoadInitialData
-        })
-    }, []);
+        console.log('refetching', latestBlockHeight);
+        if (!latestBlockHeight) return;
+        refetch ? refetch() : fetchInitialData();
+    }, [latestBlockHeight, fetchInitialData, refetch]);
 
-    // if the store says we should be loading, start loading
-    useEffect(() => {
-        if (!isInitialDataLoading || isInitialDataLoaded) return;
-        getInitialData();
-    }, [
-        isInitialDataLoading
-    ]);
-
-    useEffect(() => {
-        if (initialData.loading || !initialData.called) return;
-        if (!initialData.data) return;
-        if (!isInitialDataLoading) return;
-
-        const chronicle = (() => {
-            const { 
-                lastProcessedBlock,
-                mostRecentAuctionStart,
-                mostRecentAuctionClosingStart,
-            } = initialData.data?.chronicleByUniqueInput || {
-                lastProcessedBlock: '0',
-            };
-
-            return { 
-                lastProcessedBlock,
-                mostRecentAuctionStart,
-                mostRecentAuctionClosingStart,
-            };
-        })();
-
-        const ownHistoricalFundsPledged = (() => initialData.data.historicalParachainFundsPledgeds
-            .map(({ fundsPledged, blockHeight }: { [key: string]: string }) => ({ fundsPledged, blockHeight }))
-        )();
-
-        const ownParachain= (() => initialData.data.parachainByUniqueInput)();
-
-        const incentives = (() => {
-            const { leadPercentageRate, totalContributionWeight, siblingParachain } = initialData.data?.incentiveByUniqueInput || {
-                leadPercentageRate: '0',
-                totalContributionWeight: '0'
-            };
-
-            return { 
-                leadPercentageRate, 
-                totalContributionWeight,
-                siblingParachain: {
-                    id: siblingParachain?.id
-                }
-            };
-        })();
-
-        log.debug('useInitialData', 'done loading', { 
-            chronicle, 
-            ownHistoricalFundsPledged, 
-            ownParachain,
-            incentives
-        });
-
-        dispatch({
-            type: ActionType.SetInitialData,
-            payload: { 
-                chronicle, 
-                ownHistoricalFundsPledged, 
-                ownParachain,
-                incentives
-            }
-        });
-    }, [
-        initialData.data,
-        isInitialDataLoading
-    ])
+    return {
+        ...data,
+        loading,
+        networkStatus
+    }
 }

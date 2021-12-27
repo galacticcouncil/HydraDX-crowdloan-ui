@@ -2,15 +2,17 @@ import BigNumber from "bignumber.js";
 
 const config = {
 
-    // processorUrl: 'http://localhost:4000/graphql',
-    processorUrl: 'https://api-crowdloan-basilisk.hydradx.io/graphql',
-    nodeUrl: 'wss://ksm-arch-01.hydration.cloud',
+    processorUrl: 'http://localhost:4000/graphql',
+    // processorUrl: 'https://api-crowdloan.hydradx.io/graphql',
+    nodeUrl: 'wss://polka-arch-02.hydration.cloud',
 
     oracle: {
         dotToUSD: '25',
         // HDX price after trippling
         hdxToUSD: new BigNumber('0.08059').dividedBy('3'),
     },
+    // TODO: don't forget to update this to hydra
+    ownParaId: '2019',
     incentive: {
         // compounded 14% APY
         opportunityCost: '0.2996',
@@ -28,7 +30,9 @@ const config = {
         defaultDillutionMultiplier: '1',
         // TODO: can this have more precision if we calculate it on the spot using BigNumber? (probably not)
         minimalDillutionMultiplier: '0.4483199822',
-        allocatedHDXSupply: '1000000000'
+        allocatedHDXSupply: new BigNumber('1000000000').multipliedBy(
+            new BigNumber(10).pow(12)
+        ).toFixed(0)
     }
 };
 

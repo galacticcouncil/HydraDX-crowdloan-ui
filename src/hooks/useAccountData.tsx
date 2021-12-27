@@ -1,87 +1,70 @@
-import { useEffect } from "react";
-import { ActionType } from "src/containers/store/Actions";
-import { LoadingState, useAccount, useChronicleLastProcessedBlock, useDispatch } from "src/containers/store/Store"
-import { usePolkaDotContext } from "./usePolkadot";
-import { AccountByAccountIdQueryResponse, useAccountByAccountIdDataQuery, useHistoricalIncentivesByBlockHeightsDataQuery } from "./useQueries";
-import { isEqual } from 'lodash';
-import { LazyQueryResult, QueryResult } from "@apollo/client";
-import config from "src/config";
+import { gql, useLazyQuery } from '@apollo/client'
+import BigNumber from 'bignumber.js';
+import log from 'loglevel';
+import { useEffect, useMemo } from 'react';
+import { calculateCurrentDillutedContributionReward, calculateMinimalDillutedContributionReward } from 'src/lib/calculateRewards';
+import { useAccountsContext } from './useAccounts';
 
-const contributionsFromQuery = (accountByAccountIdData: LazyQueryResult<AccountByAccountIdQueryResponse, {}>) => {
-    return accountByAccountIdData.data?.accountByUniqueInput?.contributions
-        .filter(({ crowdloan: { id } }) => id === config.ownParachainId)
-        .map(({ balance, blockHeight, crowdloan }) => ({ balance, blockHeight, crowdloan })) || [];
-};
+log.setLevel('DEBUG');
 
-export const useAccountData = () => {
-    const dispatch = useDispatch();
-    const account = useAccount();
-    const { activeAccount, activeAccountBalance } = usePolkaDotContext();
-    const [getAccountByAccountIdData, accountByAccountIdData] = useAccountByAccountIdDataQuery(activeAccount);
-    const [getHistoricalIncentivesByBlockHeightsData, historicalIncentivesByBlockHeightsData] = useHistoricalIncentivesByBlockHeightsDataQuery(
-        accountByAccountIdData 
-            ? contributionsFromQuery(accountByAccountIdData)
-                .map(contribution => contribution.blockHeight)
-            : []
+export interface AccountDataQueryResponse {
+    contributions: {
+        contributionReward: string
+    }[]
+}
+
+export const ACCOUNT_DATA_QUERY = gql`
+    query AccountData($accountId: String!) {
+        contributions(where: {account: {accountId_eq: $accountId}}){
+            contributionReward
+        }
+    }
+`
+export const useAccountData = (totalRewardsDistributed?: string) => {
+    const { activeAccountAddress } = useAccountsContext();
+
+    const [fetchAccountData, { data, loading, networkStatus, refetch }] = useLazyQuery<AccountDataQueryResponse>(
+        ACCOUNT_DATA_QUERY,
+        { 
+            notifyOnNetworkStatusChange: true,
+            nextFetchPolicy: 'no-cache'
+        }
     );
+    const accountRewards = useMemo(() => {
+        if (!totalRewardsDistributed || !data) return;
 
-    const lastProcessedBlock = useChronicleLastProcessedBlock();
-    
-    // reload account data when the active account / active account balance changes
-    useEffect(() => {
-        // already loading
-        if (account.loading === LoadingState.Loading) return;
-        dispatch({
-            type: ActionType.LoadAccountData
-        });
-    }, [
-        activeAccount,
-        activeAccountBalance,
-        lastProcessedBlock
-    ]);
+        const totalRewards = data.contributions.reduce((totalRewards, contribution) => (
+            totalRewards.plus(contribution.contributionReward)
+        ), new BigNumber(0)); // TODO: this is dangerous
 
-    useEffect(() => {
-        // not loading, do nothing
-        if (account.loading != LoadingState.Loading) return;
-        getAccountByAccountIdData();
-    }, [
-        account.loading
-    ]);
+        const rewards = {
+            totalDillutedRewards: calculateCurrentDillutedContributionReward({
+                contributionReward: new BigNumber(totalRewards.toString()),
+                totalRewardsDistributed
+            }),
+            totalMinimalRewards: calculateMinimalDillutedContributionReward(totalRewards)
+        };
+
+        return rewards;
+    }, [data, totalRewardsDistributed]);
 
     useEffect(() => {
-        if (!accountByAccountIdData.data) return;
-        getHistoricalIncentivesByBlockHeightsData();
-    }, [
-        accountByAccountIdData.data,
-        accountByAccountIdData.loading
-    ]);
-
-    useEffect(() => {
-        if (accountByAccountIdData.loading || !accountByAccountIdData.called) return;
-        // if (historicalIncentivesByBlockHeightsData.loading || !historicalIncentivesByBlockHeightsData.called) return;
-        
-        const totalContributed = (() => {
-            return accountByAccountIdData.data?.accountByUniqueInput?.totalContributed
-                || '0'
-        })();
-
-        const contributions = contributionsFromQuery(accountByAccountIdData);
-
-        const historicalIncentives = (() => {
-            // TODO: figure out why .historicalIncentives being the wrong type was not caught by TS
-            return historicalIncentivesByBlockHeightsData.data?.historicalIncentives || []
-        })();
-
-        dispatch({
-            type: ActionType.SetAccountData,
-            payload: {
-                totalContributed,
-                contributions,
-                historicalIncentives
+        if (!activeAccountAddress) return;
+        const params = {
+            variables: {
+                accountId: activeAccountAddress
             }
-        })
-    }, [
-        accountByAccountIdData,
-        historicalIncentivesByBlockHeightsData
-    ]);
+        };
+
+        !refetch
+            ? fetchAccountData(params)
+            : refetch(params)
+    }, [activeAccountAddress, fetchAccountData, refetch]);
+
+    return {
+        ...data,
+        accountRewards,
+        loading,
+        networkStatus
+    }
 }

@@ -138,6 +138,7 @@ export const calculateCurrentDillutedContributionReward = ({
     totalRewardsDistributed: string,
 }) => {
     const dillutionMultiplier = calculateDillutionMultiplier(totalRewardsDistributed);
+    log.debug('calculateCurrentDillutedContributionReward', 'dillutionMultiplier', dillutionMultiplier.toString());
     return calculateDillutedContributionReward({
         contributionReward,
         dillutionMultiplier
