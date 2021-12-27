@@ -2,8 +2,8 @@ import BigNumber from "bignumber.js";
 
 const config = {
 
-    processorUrl: 'http://localhost:4000/graphql',
-    // processorUrl: 'http://169.254.56.216:4000/graphql',
+    // processorUrl: 'http://localhost:4000/graphql',
+    processorUrl: 'http://192.168.1.27:4000/graphql',
     // processorUrl: 'https://api-crowdloan.hydradx.io/graphql',
     nodeUrl: 'wss://polka-arch-02.hydration.cloud',
 

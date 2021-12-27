@@ -12,6 +12,8 @@ import { useMemo, useState } from 'react';
 import { calculateReimbursmentMultiplier } from 'src/lib/calculateRewards';
 import BigNumber from 'bignumber.js';
 
+import './Dashboard.scss';
+
 export const Dashboard = () => {
     const blockHeight = useLatestBlockHeight();
     const api = usePolkadotJsContext();
@@ -63,9 +65,10 @@ export const Dashboard = () => {
                 .toNumber()
         ).toFixed(2);
     }, [incentive]);
-
-    return <>
-        <div>
+            
+    return <div className='screen'>
+        <div className='dashboard'>
+            <div className='dashboard__top'>
             <AccountBar 
                 account={activeAccount} 
                 accounts={allAccounts}
@@ -79,17 +82,20 @@ export const Dashboard = () => {
                 showAccountSelector={showAccountSelector}
                 setShowAccountSelector={setShowAccountSelector}
             />
-        </div>
+            </div>
 
-        <div>
-            {/* graph */}
-            <h2>Incentives</h2>
-            <p>Own funds pledged: {ownParachain?.fundsPledged}</p>
-            <p>Sibling funds pledged: {siblingParachain?.fundsPledged}</p>
-            <p>Reimbursment multiplier: {reimbursmentMultiplier}</p>
+            <div className='dashboard__bottom'>
+                {/* graph */}
+                <div className='dashboard__bottom__graph'>
+                <h2>Incentives</h2>
+                <p>Own funds pledged: {ownParachain?.fundsPledged}</p>
+                <p>Sibling funds pledged: {siblingParachain?.fundsPledged}</p>
+                <p>Reimbursment multiplier: {reimbursmentMultiplier}</p>
 
-            {/* form */}
-            <ContributionForm 
+                </div>
+                {/* form */}
+                <div className='dashboard__bottom__form'>
+                <ContributionForm 
                 totalContributionAmount={accountTotalContribution}
                 totalRewards={accountTotalRewards}
                 onContribute={handleCrowdloanContribute}
@@ -99,8 +105,11 @@ export const Dashboard = () => {
                 contributionStatus={contributionStatus}
                 incentive={incentive}
             />
+                </div>
+            </div>
+
         </div>
-    </>
+    </div>
 
     // return (<>
     //     <p>Dashboard</p>

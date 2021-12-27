@@ -1,19 +1,195 @@
 @import './colors.scss';
 
-@font-face {
-  font-family: 'Pexico';
-  src: url('./Pexico-Regular.woff2') format('woff2');
-  src: url('./Pexico-Regular.woff') format('woff');
-  font-weight: 100;
-  font-style: normal;
-  font-display: swap;
-}
-
 
 html, body {
   margin: 0;
   padding: 0;
-  // background: $grayDarkest;
-  font-family: 'Pexico';
-  font-smooth: subpixel-antialiased;
+
+  box-sizing: border-box;
+
+  position: relative;
+
+  width: 100%;
+}
+
+html {
+  font-family: "Pexico-micro";
+}
+
+body {
+  height: 100vh;
+
+  background: $dark;
+  color: $light;
+  font-family: "Pexico-micro";
+  font-style: normal;
+  font-weight: normal;
+  text-rendering: optimizeSpeed;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  cursor: crosshair;
+
+  background-image: url('./assets/headerbg.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+div {
+  display: block;
+  box-sizing: border-box;
+}
+
+button, input {
+  font-family: "Pexico-regular";
+}
+
+button {
+  border: none;
+  outline: none;
+  padding: 0.5em 1em;
+
+  display: inline-block;
+  background-color: $light;
+
+  box-shadow: 0.5em 0.5em $dark;
+  color: $dark;
+
+  text-decoration: none;
+  vertical-align: middle;
+  white-space: nowrap;
+
+  transition: transform 150ms, background-color 150ms, box-shadow 150ms;
+
+  &:hover {
+    cursor: pointer;
+    color: $light;
+    background-color: $medium;
+    box-shadow: 0em 0em $dark;
+    transform: translate(6px, 6px);
+
+    transition: transform 150ms, background-color 150ms, box-shadow 150ms;
+  }
+
+  &.disabled {
+    border: 1px solid $medium;
+    background-color: transparent;
+    color: $medium;
+    pointer-events: none;
+  }
+}
+
+input {
+  padding: 0.7em;
+
+  background-color: transparent;
+
+  border-top: 2px solid $dark;
+  border-left: 2px solid $dark;
+  border-bottom: 2px solid $medium;
+  border-right: 2px solid $medium;
+
+  box-shadow: none;
+
+  border-radius: 0;
+
+  display: block;
+  outline: none;
+  color: $light;
+  text-align: center;
+  &::placeholder {
+    color: $pink;
+    opacity: 1;
+  }
+}
+
+::-webkit-scrollbar {
+  width: auto;
+}
+::-webkit-scrollbar-track {
+  background: $dark;
+  border: none;
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0) inset;
+}
+::-webkit-scrollbar-thumb {
+  background: $light;
+}
+::selection {
+  background: $dark;
+  color: $pink;
+}
+::-moz-selection {
+  background: $dark;
+  color: $pink;
+}
+
+h1 {
+  font-family: "Moche-regular";
+  font-weight: 400;
+  border-radius: 3px;
+  border: 1px solid $light;
+  box-shadow: 1px 1px 20px rgba(82, 178, 237, 0.4);
+  font-size: 2.5em;
+  text-align: center;
+}
+
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 400;
+  text-transform: uppercase;
+  font-family: "Pexico-regular";
+  color: $pink;
+  text-align: center;
+  text-shadow: 1px 1px 20px rgba($pink, 0.7);
+}
+
+a,
+a:visited {
+  color: $light;
+}
+
+a {
+  display: inline-block;
+  background-color: $medium;
+  border: 5px outset $medium;
+  box-shadow: 6px 6px black;
+  color: $light;
+  text-decoration: none;
+  padding: 0.3em;
+  margin: 0.3em;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+a:hover {
+  color: $dark;
+  border-color: $dark;
+  background-color: $light;
+  outline: none;
+}
+
+@font-face {
+  font-family: "Moche-regular";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Moche-regular"), local("Moche-regular"),
+    url('./Moche-Regular.ttf') format("truetype");
+}
+
+@font-face {
+  font-family: "Pexico-regular";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Pexico-regular"), local("Pexico-regular"),
+    url('./Urtd-Pexico-Regular.ttf') format("truetype");
+}
+
+@font-face {
+  font-family: "Pexico-micro";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Pexico-micro"), local("Pexico-micro"),
+    url('./Urtd-PexicoMicro-Regular.ttf') format("truetype");
 }

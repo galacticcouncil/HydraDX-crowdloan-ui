@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { Account } from 'src/hooks/useAccounts';
 import { useClickAway } from 'react-use';
 import './AccountBar.scss';
-import { initial } from 'lodash';
+import { fromE10Precision } from 'src/lib/utils';
+import millify from 'millify';
 
 export interface AccountBarProps {
     account?: Account,
@@ -46,27 +47,28 @@ export const AccountBar = ({
         setShowAccountSelector(false);
     }, [setActiveAccountAddress, setShowAccountSelector]);
 
-    return <div>
-        <p>Show account selector?: {showAccountSelector ? 'true' : 'false'}</p>
+    return <div className='accountSelector'>
         <div
             ref={accountSelectorRef} 
-            className={showAccountSelector ? 'visible': 'hidden'}>
+            className={'accountSelector__overlay' + (showAccountSelector ? '' : ' hidden')}>
             {
                 accounts?.length
                     ? (
-                        <div>
+                        <div className='accountSelector__overlay__list'>
                             {accounts.map((account, i) => (
-                                <div 
+                                <div className='accountSelector__account'
                                     key={i}
                                     onClick={_ => handleSelectActiveAccount(account)}
                                 >
-                                    {account.name} | {account.address} | {account.balance}
+                                    <div className='accountSelector__account__name'>{account.name}</div>|
+                                    <div className='accountSelector__account__balance'>{millify(parseFloat(fromE10Precision(account.balance)))} DOT</div>|
+                                    <div className='accountSelector__account__address'>{account.address}</div>
                                 </div>
                             ))}
                         </div>
                     )
                     : (
-                        <div>
+                        <div className='accountSelector__overlay__list__empty'>
                             No accounts available
                         </div>
                     )
@@ -74,22 +76,28 @@ export const AccountBar = ({
                 
             }
         </div>
-        <div>
-            <p>activeAccountLoading: {activeAccountLoading ? 'loading' : 'not loading'}</p>
-            <p>Initially loaded: {initiallyLoaded ? 'already loaded' : 'not yet'}</p>
-            <p>{chainBlockHeight} / {processorBlockHeight}</p>
-            <p>{account?.address} | {account?.balance} | {account?.name}</p>
+        <div className='accountSelector__accountInfo'>
+            {/* <p>activeAccountLoading: {activeAccountLoading ? 'loading' : 'not loading'}</p>
+            <p>Initially loaded: {initiallyLoaded ? 'already loaded' : 'not yet'}</p> */}
+            {/* <div>{chainBlockHeight} / {processorBlockHeight}</div> */}
             
-            <button onClick={_ => setShowAccountSelector(true)}>
-                {!apiReady
+            <div className='accountSelector__account account_selector__accountInfo__info' onClick={_ => setShowAccountSelector(true)}>
+                [{!apiReady
                     ? 'Loading...'
                     : (
                         account
-                            ? 'Change account'
+                            ? (
+                                <>
+                                    <div className='accountSelector__account__name'>{account?.name}</div>|
+                                    <div className='accountSelector__account__balance'>{millify(parseFloat(fromE10Precision(account?.balance)))} DOT</div>|
+                                    <div className='accountSelector__account__address'>{account?.address}</div>
+                                </>
+                            )
                             : 'Connect account'
                     )
-                }
-            </button>
+            }]
+            </div>
+            
         </div>
     </div>
 }

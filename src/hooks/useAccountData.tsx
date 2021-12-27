@@ -51,7 +51,7 @@ export const useAccountData = (totalRewardsDistributed?: string) => {
     }, [data, totalRewardsDistributed]);
 
     const accountTotalContribution = useMemo(() => {
-        return data?.contributions.reduce((totalContribution, contribution) => {
+        return data?.contributions?.reduce((totalContribution, contribution) => {
             return totalContribution.plus(contribution.balance)
         }, new BigNumber(0));
     }, [data]);

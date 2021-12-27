@@ -1,0 +1,39 @@
+@import '../../colors.scss';
+
+.screen {
+    padding: 1em;
+}
+
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    background-color: $medium;
+    padding: 1em;
+    border: 4px double $light;
+    box-shadow: 8px 8px black;
+
+    &__top {
+
+    }
+
+    &__bottom {
+        display: flex;
+        gap: 0.5em;
+        
+        &__graph {
+            flex-grow: 1;
+
+            border: 4px double $dark;
+        }
+
+        &__form {
+            padding: 1em;
+            flex-basis: 380px;
+
+            border: 4px double $dark;
+
+            flex-grow: 0;
+            flex-shrink: 0;
+        }
+    }
+}

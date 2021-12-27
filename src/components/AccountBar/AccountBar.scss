@@ -1,0 +1,69 @@
+@import '../../colors.scss';
+
+.accountSelector {
+    &__overlay {
+        position: absolute;
+        max-width: 90vw;
+        max-height: 80vh;
+        margin: auto;
+        margin-top: 5vh;
+        margin-bottom: 5vh;
+        left: 0;
+        right: 0;
+
+        overflow-y: scroll;
+
+        border: 4px double $light;
+        box-shadow: 8px 8px black;
+
+        background-color: $medium;
+
+        z-index: 1;
+
+        &.hidden {
+            display: none;
+        }
+
+        &__list {
+            padding: 1em;
+        }
+    }
+
+    &__account {
+        display: flex;
+        gap: 1em;
+        padding: 0.5em 0;
+        width: 100%;
+
+        &:hover {
+            color: $pink;
+            cursor: pointer;
+        }
+
+        &__name {
+            font-weight: 600;
+        }
+
+        &__name,&__balance {
+            flex-shrink: 0;
+        }
+
+        &__address {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+
+    &__accountInfo {
+        display: flex;
+
+        &__info {
+            flex-shrink: 1;
+        }
+
+        &button {
+            flex-basis: 1;
+            flex-shrink: 0;
+        }
+    }
+}
