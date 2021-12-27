@@ -80,7 +80,9 @@ export const ContributionForm = ({
                     }
                 />
 
-                <button type='submit'>
+                <button 
+                    type='submit'
+                    disabled={!apiReady}>
                     {!apiReady
                         ? 'Connecting...'
                         : (
