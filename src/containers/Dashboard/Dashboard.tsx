@@ -8,7 +8,9 @@ import { useActiveAccount } from './hooks/useActiveAccount';
 import { usePolkadotJsContext } from 'src/hooks/usePolkadotJs';
 import { ContributionForm } from 'src/components/AccountBar/ContributionForm';
 import { useHandleCrowdloanContribute } from './hooks/useHandleCrowdloanContribute';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { calculateReimbursmentMultiplier } from 'src/lib/calculateRewards';
+import BigNumber from 'bignumber.js';
 
 export const Dashboard = () => {
     const blockHeight = useLatestBlockHeight();
@@ -30,7 +32,7 @@ export const Dashboard = () => {
     const { 
         loading: initialDataLoading,
         incentive,
-        ownHistoricalFundsPledged
+        ownParachain
     } = useInitialData();
 
     const {
@@ -50,8 +52,17 @@ export const Dashboard = () => {
 
     const {
         loading: siblingDataLoading,
-        siblingHistoricalFundsPledged,
+        siblingParachain,
     } = useSiblingData(incentive?.siblingParachain?.id)
+
+    const reimbursmentMultiplier = useMemo(() => {
+        if (!incentive) return;
+        return calculateReimbursmentMultiplier(
+            new BigNumber(incentive?.leadPercentageRate)
+                .dividedBy(new BigNumber(10).pow(6))
+                .toNumber()
+        ).toFixed(2);
+    }, [incentive]);
 
     return <>
         <div>
@@ -72,6 +83,11 @@ export const Dashboard = () => {
 
         <div>
             {/* graph */}
+            <h2>Incentives</h2>
+            <p>Own funds pledged: {ownParachain?.fundsPledged}</p>
+            <p>Sibling funds pledged: {siblingParachain?.fundsPledged}</p>
+            <p>Reimbursment multiplier: {reimbursmentMultiplier}</p>
+
             {/* form */}
             <ContributionForm 
                 totalContributionAmount={accountTotalContribution}

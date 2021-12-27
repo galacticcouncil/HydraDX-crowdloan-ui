@@ -3,18 +3,16 @@ import { useEffect } from 'react';
 import { useLatestBlockHeightContext } from './useLatestBlockHeight'
 
 export interface SiblingDataQueryResponse {
-    siblingHistoricalFundsPledged: {
+    siblingParachain: {
         fundsPledged: string,
-        createdAt: string
-    }[]
+    }
 }
 
 export const SIBLING_DATA_QUERY = gql`
     query SiblingData($siblingParaId: ID!) {
         # TODO: add fetching only of 3 days old data using the block height filter
-        siblingHistoricalFundsPledged: historicalParachainFundsPledgeds(where: {parachain: {id_eq: $siblingParaId}}) {
+        siblingParachain: parachainById(id: $siblingParaId) {
             fundsPledged,
-            # TODO: add createdAt for graph
         }
     }
 ` 

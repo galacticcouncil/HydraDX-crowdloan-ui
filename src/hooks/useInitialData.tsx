@@ -12,10 +12,9 @@ export interface InitialDataQueryResponse {
             id?: string
         }
     },
-    ownHistoricalFundsPledged: {
+    ownParachain: {
         fundsPledged: string,
-        createdAt: string,
-    }[]
+    }
 }
 
 export const INITIAL_DATA_QUERY = gql`
@@ -30,7 +29,7 @@ export const INITIAL_DATA_QUERY = gql`
         }
 
         # TODO: add fetching only of 3 days old data using the block height filter
-        ownHistoricalFundsPledged: historicalParachainFundsPledgeds(where: {parachain: {id_eq: $ownParaId}}) {
+        ownParachain: parachainById(id: $ownParaId) {
             fundsPledged,
             # TODO: add createdAt for graph
         }
