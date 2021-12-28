@@ -101,7 +101,7 @@
 
             padding: 1em;
 
-            min-height: 350px;
+            min-height: 375px;
 
             &__status {
                 flex-shrink: 1;
@@ -118,6 +118,7 @@
                 justify-content: space-around;
 
                 min-height: 165px;
+                padding-bottom: 0.8em;
 
                 .chart {
                     width: 100px;
