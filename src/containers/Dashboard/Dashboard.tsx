@@ -157,7 +157,8 @@ export const Dashboard = () => {
                   className="barChart"
                 ></div>
                 <div className="barChartNumber">
-                  {100 * parseFloat(reimbursmentMultiplier || "0.1") + "%"}
+                  {100 * parseFloat(reimbursmentMultiplier || "0.1") + "%"}{" "}
+                  REWARD
                 </div>
               </div>
             </div>
