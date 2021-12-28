@@ -163,7 +163,7 @@ export const ContributionForm = ({
                             case ContributionStatus.FAILED:
                                 return <div className='status__error'>Contribution failed</div>
                             case ContributionStatus.SUCCESSFUL:
-                                return <div className='status__info'>Contribution successful</div>
+                                return <div className='status__info'>Contribution successful, your rewards are being processed and will show up momentarily.</div>
                             case ContributionStatus.LOADING:
                                 return <div className='status__info'>Contribution loading</div>
                             default:
