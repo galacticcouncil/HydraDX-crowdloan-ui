@@ -151,7 +151,11 @@ export const ContributionForm = ({
 
                 <div className='status'>
                     {(() => {
-                        return form.formState.errors.amount ?  <div className='status__info'>Minimal contribution is 5 DOT</div> : <></>
+                        return (
+                            form.formState.errors.amount 
+                                ? <div className='status__info'>Minimal contribution is 5 DOT</div> 
+                                : <></>
+                            )
                     })()}
                     {(() => {
                         switch(contributionStatus){
