@@ -1,23 +1,24 @@
+import { ApolloProvider } from '@apollo/client';
 import React from 'react';
 import './App.css';
-import ConfiguredApolloProvider from './containers/ApolloProvider'
-import { StoreProvider } from './containers/store/Store';
-import { PolkadotProvider } from './hooks/usePolkadot';
-import { Dashboard } from './pages/Dashboard';
-import { DashboardDataProvider } from './hooks/useDashboardData';
+import { Dashboard } from './containers/Dashboard/Dashboard';
+import { LatestBlockHeightProvider } from './hooks/useLatestBlockHeight';
+import { PolkadotJsProvider } from './hooks/usePolkadotJs';
+import { AccountsProvider } from './hooks/useAccounts';
+import { client } from './lib/apollo';
 
 function App() {
   return (
-    <ConfiguredApolloProvider>
-      <StoreProvider>
-        <PolkadotProvider>
-          <DashboardDataProvider>
-              <Dashboard/>
-          </DashboardDataProvider>
-        </PolkadotProvider>
-      </StoreProvider>
-    </ConfiguredApolloProvider>
-  );
+    <ApolloProvider client={client} >
+      <PolkadotJsProvider>
+        <LatestBlockHeightProvider>
+          <AccountsProvider>
+            <Dashboard />
+          </AccountsProvider>
+        </LatestBlockHeightProvider>
+      </PolkadotJsProvider>
+    </ApolloProvider>
+  )
 }
 
 export default App;

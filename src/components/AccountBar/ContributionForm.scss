@@ -1,0 +1,40 @@
+@import '../../colors.scss';
+
+.contribute {
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    justify-content: space-between;
+
+    &__past {
+        padding-bottom: 1em;
+        border-bottom: 2px solid $dark;
+        display: flex;
+        flex-direction: column;
+        gap: 0.1em;
+    }
+
+    &__current {
+        display: flex;
+        flex-direction: column;
+        gap: 0.1em;
+    }
+
+    &__form {
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
+    }
+}
+
+.status {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3em;
+
+    & .status__error {
+        color: $red;
+    }
+}

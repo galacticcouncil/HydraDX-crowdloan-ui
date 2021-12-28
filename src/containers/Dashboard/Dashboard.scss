@@ -1,0 +1,177 @@
+@import '../../colors.scss';
+
+.screen {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top:1em;
+
+    &__navigation {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        margin: auto;
+        height: 2em;
+
+        max-width: 800px;
+        width: 90%;
+
+        display: flex;
+        gap: 1em;
+        padding: 0 0.5em;
+
+        background-color: $dark;
+        text-decoration: underline;
+
+        box-shadow: 4px 4px 0 black;
+        border-top: none;
+
+        z-index: 2;
+        
+        h1, a {
+            font-family: 'pexico-micro';
+            font-size: 1em;
+            background: none;
+            box-shadow: none;
+            border: 0;
+            margin: 0;
+            line-height: 1em;
+            display: flex;
+            gap: 0.5em;
+            align-items: center;
+            justify-content: center;
+
+            &:hover {
+                color: $pink;
+                background: none;
+            }
+        }
+
+        & .hydraLogo {
+            width: 1.5em;
+            height: 1.5em;
+            background-image: url(../../assets/pink-transp.svg);
+        }
+    }
+}
+
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    background-color: $medium;
+    padding: 1em;
+    padding-top:1.5em;
+    border: 4px double $light;
+    box-shadow: 8px 8px black;
+
+    max-width: 800px;
+
+    overflow-y: auto;
+
+    width: 100%;
+
+    margin: auto;
+    left: 0;
+    right: 0;
+    margin-top: 9%;
+
+    gap: 1em;
+
+    &__bottom {
+        display: flex;
+        gap: 0.5em;
+        justify-content: center;
+        flex-wrap: wrap;
+        flex-grow: 1;
+        
+        &__graph {
+            position: relative;
+            gap: 1em;
+
+            flex-grow: 1;
+            flex-basis: 300px;
+
+            border: 4px double $dark;
+
+            display: flex;
+            flex-direction: column;
+
+            padding: 1em;
+            padding-bottom: 1.5rem;
+
+            min-height: 375px;
+
+            &__status {
+                flex-shrink: 1;
+                padding-bottom: 2em;
+            }
+
+            .charts {
+                width: 100%;
+                height: 100%;
+
+                position: relative;
+
+                display: flex;
+                justify-content: space-around;
+
+                min-height: 165px;
+
+                .chart {
+                    width: 100px;
+                    height: 100%;
+                    position: relative;
+                    background-color: $dark;
+
+                    display: flex;
+                    align-items: flex-end;
+                    justify-content: center;
+
+                    box-shadow: 0 -1px $light inset, 2px 2px black inset;
+
+                    .barChartNumber {
+                        position: absolute;
+                        top: 0;
+                        bottom: 0;
+                        align-items: center;
+                        display: flex;
+                        font-weight: bold;
+                        color: white;
+                        text-align: center;
+                        font-size: 0.9em;
+                    }
+
+                    .barChart {
+                        width: 100%;
+                        background-color: $light;
+
+                        box-shadow: 4px 4px black;
+
+                        transition: height 0.6s ease;
+                    }
+                }
+            }
+
+
+        }
+
+        &__form {
+            padding: 1em;
+            flex-basis: 360px;
+            padding-bottom: 1.5rem;
+
+            border: 4px double $dark;
+
+            flex-grow: 1;
+            flex-shrink: 0;
+        }
+    }
+}
+
+// no idea why BEM above isnt working
+.dashboard__botton__graph__status {
+    padding-bottom: 1rem;
+}

@@ -1,62 +1,39 @@
 import BigNumber from "bignumber.js";
-import { toKsmPrecision } from './utils';
-import ksmPrecision from "./ksmPrecision";
-
-export const precisionMultiplierBN = new BigNumber('10').pow('6');
-export const ksmPrecisionMultiplierBN = new BigNumber('10').pow('12');
-
 
 const config = {
 
     // processorUrl: 'http://localhost:4000/graphql',
-    processorUrl: 'https://api-crowdloan-basilisk.hydradx.io/graphql',
-    nodeUrl: 'wss://ksm-arch-01.hydration.cloud',
+    // processorUrl: 'http://f083-188-167-250-132.ngrok.io/graphql',
+    processorUrl: 'https://api-crowdloan.hydradx.io/graphql',
+    nodeUrl: 'wss://polka-arch-02.hydration.cloud',
 
-    // Kilt
-    // ownParachainId: '2086',
-    ownParachainId: '2090',
-    // 31.8 - 3 days
-    ownCrowdloanBlockHeight: '8979298',
-    dappName: 'Basilisk Crowdloan',
-    chronicleRefetchTimeout: 6000, // ms
-    auctionEndingPeriodLength: 72000,
-    crowdloanCap: new BigNumber(toKsmPrecision((new BigNumber('222222')))),
-    opportunityCost: new BigNumber('0.1375'),
-    ksmToUsd: '400',
-    hdxToUsd: '0.08059',
-
-    ksmPrecision,
-    displayPrecision: 6,
-    chart: {
-        historicalDataSpan: 600,
-        blocksPerDay: 14400,
-        auctionClosingStart: 9035066
+    oracle: {
+        dotToUSD: '25',
+        // HDX price after trippling
+        hdxToUSD: new BigNumber('0.08059').dividedBy('3'),
     },
-
-    incentives: {
-        hdx: {
-            leadPercentageRateCliffRange: [
-                new BigNumber('15')
-                    .multipliedBy(precisionMultiplierBN)
-                    .toNumber(),
-                new BigNumber('20')
-                    .multipliedBy(precisionMultiplierBN)
-                    .toNumber(),
-            ],
-            scale: {
-                max: 30,
-                min: 5,
-                none: 0,
-            }
+    // TODO: don't forget to update this to hydra
+    ownParaId: '2034',
+    incentive: {
+        // compounded 14% APY
+        opportunityCost: '0.2996',
+        reimbursmentRange: {
+            // the incentive scheme is actually 100%-10%,
+            // its reversed here for the sake of the linear scale
+            from: 0.1,
+            to: 1
         },
-        bsx: {
-            allocated: new BigNumber(toKsmPrecision(new BigNumber('15000000000'))),
-            scale: {
-                max: 1,
-                min: 0,
-                none: 0
-            }
-        }
+        leadPercentageCliff: {
+            from: 15,
+            to: 25,
+        },
+        // by default no dillution is applied, the multiplier is '1'
+        defaultDillutionMultiplier: '1',
+        // TODO: can this have more precision if we calculate it on the spot using BigNumber? (probably not)
+        minimalDillutionMultiplier: '0.4483199822',
+        allocatedHDXSupply: new BigNumber('1000000000').multipliedBy(
+            new BigNumber(10).pow(12)
+        ).toFixed(0)
     }
 };
 
