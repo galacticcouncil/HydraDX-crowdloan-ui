@@ -3,8 +3,8 @@ import BigNumber from "bignumber.js";
 const config = {
 
     // processorUrl: 'http://localhost:4000/graphql',
-    processorUrl: 'http://f083-188-167-250-132.ngrok.io/graphql',
-    // processorUrl: 'https://api-crowdloan.hydradx.io/graphql',
+    // processorUrl: 'http://f083-188-167-250-132.ngrok.io/graphql',
+    processorUrl: 'https://api-crowdloan.hydradx.io/graphql',
     nodeUrl: 'wss://polka-arch-02.hydration.cloud',
 
     oracle: {
@@ -13,7 +13,7 @@ const config = {
         hdxToUSD: new BigNumber('0.08059').dividedBy('3'),
     },
     // TODO: don't forget to update this to hydra
-    ownParaId: '2019',
+    ownParaId: '2034',
     incentive: {
         // compounded 14% APY
         opportunityCost: '0.2996',
