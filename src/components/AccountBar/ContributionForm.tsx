@@ -9,6 +9,7 @@ import { ContributionStatus } from 'src/containers/Dashboard/hooks/useHandleCrow
 import { calculateCurrentContributionReward, calculateCurrentDillutedContributionReward, calculateDillutedContributionReward, calculateMinimalContributionReward, calculateMinimalDillutedContributionReward } from 'src/lib/calculateRewards';
 import { watch } from 'fs';
 import millify from 'millify';
+import { fromE10Precision, fromE12Precision } from 'src/lib/utils';
 
 export interface FormFields {
     amount: string
@@ -97,9 +98,9 @@ export const ContributionForm = ({
     return <div className='contribute'>
         <h2>Contribute</h2>
         <div className='contribute__past'>
-            <div>Your contribution: {totalContributionAmount?.toString()} DOT</div>
+            <div>Your contribution: {totalContributionAmount && millify(parseFloat(fromE10Precision(totalContributionAmount.toFixed(0))))} DOT</div>
             {/* <div>Total rewards: {totalRewards?.totalDillutedRewards.toString()}</div> */}
-            <div>Your minimum rewards: {totalRewards?.totalMinimalRewards.toString()} HDX</div>
+            <div>Your minimum rewards: {totalRewards?.totalMinimalRewards && millify(parseFloat(fromE12Precision(totalRewards?.totalMinimalRewards.toFixed(0))))} HDX</div>
         </div>
         
         <div className='contribute__current'>
