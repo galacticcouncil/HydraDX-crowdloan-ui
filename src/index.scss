@@ -44,6 +44,8 @@ button, input {
 }
 
 button {
+  width: 100%;
+
   border: none;
   outline: none;
   padding: 0.5em 1em;
@@ -62,18 +64,18 @@ button {
 
   &:hover {
     cursor: pointer;
-    color: $light;
-    background-color: $medium;
+    background-color: $dark;
+    color: $pink;
     box-shadow: 0em 0em $dark;
     transform: translate(6px, 6px);
 
     transition: transform 150ms, background-color 150ms, box-shadow 150ms;
   }
 
-  &.disabled {
-    border: 1px solid $medium;
-    background-color: transparent;
-    color: $medium;
+  &:disabled {
+    border: 1px solid $dark;
+    background-color: $medium;
+    color: $dark;
     pointer-events: none;
   }
 }
@@ -83,10 +85,12 @@ input {
 
   background-color: transparent;
 
+  box-sizing: border-box;
+
   border-top: 2px solid $dark;
   border-left: 2px solid $dark;
-  border-bottom: 2px solid $medium;
-  border-right: 2px solid $medium;
+  border-bottom: 2px solid $light;
+  border-right: 2px solid $light;
 
   box-shadow: none;
 
@@ -95,7 +99,9 @@ input {
   display: block;
   outline: none;
   color: $light;
-  text-align: center;
+
+  width: 100%;
+
   &::placeholder {
     color: $pink;
     opacity: 1;
