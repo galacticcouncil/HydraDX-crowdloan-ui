@@ -69,28 +69,30 @@ export const Dashboard = () => {
   const calculateTargetPercentage = useCallback(() => {
     if (siblingParachain?.fundsPledged && ownParachain?.fundsPledged) {
       return (
-        (
-          (100 / parseFloat(fromE10Precision(siblingParachain?.fundsPledged))) *
-          parseFloat(fromE10Precision(ownParachain?.fundsPledged))
-        ).toFixed(2)
-      );
-    } else return '0';
+        (100 / parseFloat(fromE10Precision(siblingParachain?.fundsPledged))) *
+        parseFloat(fromE10Precision(ownParachain?.fundsPledged))
+      ).toFixed(2);
+    } else return "0";
   }, [siblingParachain?.fundsPledged, ownParachain?.fundsPledged]);
 
   return (
     <div className="screen">
-                <div className="screen__navigation">
-          <a href="https://hydradx.io" rel="noreferrer" target="_blank">
-            <div className="hydraLogo screen__navigation__icon"></div>
-            <h1>Home</h1>
-          </a>
-          <a className="help" href="https://discord.gg/aQTtp8aRbk" rel="noreferrer" target="_blank">
-            Help
-          </a>
-        </div>
+      <div className="screen__navigation">
+        <a href="https://hydradx.io" rel="noreferrer" target="_blank">
+          <div className="hydraLogo screen__navigation__icon"></div>
+          <h1>Home</h1>
+        </a>
+        <a
+          className="help"
+          href="https://discord.gg/aQTtp8aRbk"
+          rel="noreferrer"
+          target="_blank"
+        >
+          Help
+        </a>
+      </div>
 
       <div className="dashboard">
-
         <div className="dashboard__top">
           <AccountBar
             account={activeAccount}
@@ -112,21 +114,22 @@ export const Dashboard = () => {
           <div className="dashboard__bottom__graph">
             <h2>Status</h2>
             <div className="dashboard__botton__graph__status">
-              We are {(
-                  (parseFloat(calculateTargetPercentage()) > 115) 
-                    ? ('winning in the target auction by ' + 
-                    (parseFloat(calculateTargetPercentage()) - 100).toFixed(0) + '%. ' + 
-                    ((parseFloat(calculateTargetPercentage()) > 115) ? 
-                        'You will receive ' + (100 * parseFloat(reimbursmentMultiplier || "0.1 ") 
-                            + "% of rewards for your contributions at this moment" ) 
-                        : 'We didn\'t catch safe lead yet, you will still receive highest reward at this moment!'))
-                    : 'behind in the target auction. Help us get the slot and you will receive highest reward now!'
-                )}
+              We are{" "}
+              {parseFloat(calculateTargetPercentage()) > 115
+                ? "winning in the target auction by " +
+                  (parseFloat(calculateTargetPercentage()) - 100).toFixed(0) +
+                  "%. " +
+                  (parseFloat(calculateTargetPercentage()) > 115
+                    ? "You will receive " +
+                      (100 * parseFloat(reimbursmentMultiplier || "0.1 ") +
+                        "% of rewards for your contributions at this moment")
+                    : "We didn't catch safe lead yet, you will still receive highest reward at this moment!")
+                : "behind in the target auction. Help us get the slot and you will receive highest reward now!"}
             </div>
             <div className="charts">
               <div className="target chart">
                 <div
-                  style={{ height: calculateTargetPercentage() + '%' }}
+                  style={{ height: calculateTargetPercentage() + "%" }}
                   className="barChart"
                 ></div>
                 <div className="barChartNumber">
