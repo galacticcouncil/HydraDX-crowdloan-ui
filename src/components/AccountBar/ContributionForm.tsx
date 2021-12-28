@@ -150,22 +150,21 @@ export const ContributionForm = ({
 
                 <div className='status'>
                     {(() => {
-                        return form.formState.errors.amount ? <></> : <div className='status__info'>Minimal contribution is 5 DOT</div>
+                        return form.formState.errors.amount ?  <div className='status__info'>Minimal contribution is 5 DOT</div> : <></>
                     })()}
                     {(() => {
                         switch(contributionStatus){
                             case ContributionStatus.FAILED:
-                                return <div className='status__error'>'Contribution failed'</div>
+                                return <div className='status__error'>Contribution failed</div>
                             case ContributionStatus.SUCCESSFUL:
-                                return <div className='status__info'>'Contribution successful'</div>
+                                return <div className='status__info'>Contribution successful</div>
                             case ContributionStatus.LOADING:
-                                return <div className='status__error'>'Contribution loading'</div>
+                                return <div className='status__error'>Contribution loading</div>
                             default:
                                 return '';
                         }
                     })()}
                 </div>
-
             </form>
         </div>
     </div>

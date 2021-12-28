@@ -83,7 +83,7 @@ export const AccountBar = ({
             
             <div className='accountSelector__account account_selector__accountInfo__info' onClick={_ => setShowAccountSelector(true)}>
                 [{!apiReady
-                    ? 'Loading...'
+                    ? <div className='accountSelector__account__name'>Loading...</div>
                     : (
                         account
                             ? (

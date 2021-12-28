@@ -1,9 +1,12 @@
 @import '../../colors.scss';
 
 .contribute {
+    height: 100%;
+
     display: flex;
     flex-direction: column;
     gap: 1em;
+    justify-content: space-between;
 
     &__past {
         padding-bottom: 1em;

@@ -1,15 +1,16 @@
 @import '../../colors.scss';
 
 .accountSelector {
+    justify-content: center;
+    display: flex;
+    position: relative;
+
     &__overlay {
         position: absolute;
-        max-width: 90vw;
         max-height: 80vh;
-        margin: auto;
-        margin-top: 5vh;
-        margin-bottom: 5vh;
-        left: 0;
-        right: 0;
+        margin-top: 1em;
+        margin-bottom: 0;
+        top: 5vh;
 
         overflow-y: scroll;
 
@@ -56,6 +57,7 @@
 
     &__accountInfo {
         display: flex;
+        width: 100%;
 
         &__info {
             flex-shrink: 1;

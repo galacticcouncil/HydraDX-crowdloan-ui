@@ -10,6 +10,8 @@ html, body {
   position: relative;
 
   width: 100%;
+
+  height: 100vh;
 }
 
 html {
@@ -17,8 +19,6 @@ html {
 }
 
 body {
-  height: 100vh;
-
   background: $dark;
   color: $light;
   font-family: "Pexico-micro";
@@ -109,7 +109,7 @@ input {
 }
 
 ::-webkit-scrollbar {
-  width: auto;
+  width: 1rem;
 }
 ::-webkit-scrollbar-track {
   background: $dark;
@@ -143,6 +143,8 @@ h3,
 h4,
 h5,
 h6 {
+  margin: 0.5em;
+  line-height: 1em;
   font-weight: 400;
   text-transform: uppercase;
   font-family: "Pexico-regular";
