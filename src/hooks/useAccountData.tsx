@@ -4,6 +4,7 @@ import log from 'loglevel';
 import { useEffect, useMemo } from 'react';
 import { calculateCurrentDillutedContributionReward, calculateMinimalDillutedContributionReward } from 'src/lib/calculateRewards';
 import { useAccountsContext } from './useAccounts';
+import { useLatestBlockHeight, useLatestBlockHeightContext } from './useLatestBlockHeight';
 
 log.setLevel('DEBUG');
 
@@ -24,12 +25,16 @@ export const ACCOUNT_DATA_QUERY = gql`
 `
 export const useAccountData = (totalRewardsDistributed?: string) => {
     const { activeAccountAddress } = useAccountsContext();
+    const blockHeight = useLatestBlockHeightContext()
 
     const [fetchAccountData, { data, loading, networkStatus, refetch }] = useLazyQuery<AccountDataQueryResponse>(
         ACCOUNT_DATA_QUERY,
         { 
             notifyOnNetworkStatusChange: true,
-            nextFetchPolicy: 'no-cache'
+            nextFetchPolicy: 'no-cache',
+            variables: {
+                accountId: activeAccountAddress
+            }
         }
     );
     const accountTotalRewards = useMemo(() => {
@@ -38,6 +43,8 @@ export const useAccountData = (totalRewardsDistributed?: string) => {
         const totalRewards = data.contributions?.reduce((totalRewards, contribution) => (
             totalRewards.plus(contribution.contributionReward)
         ), new BigNumber(0)); // TODO: this is dangerous
+
+        if (!totalRewards) return;
 
         const rewards = {
             totalDillutedRewards: calculateCurrentDillutedContributionReward({
@@ -64,12 +71,12 @@ export const useAccountData = (totalRewardsDistributed?: string) => {
             }
         };
 
-        console.log('active account address changed', activeAccountAddress);
+        console.log('active account address changed', params);
 
         !refetch
             ? fetchAccountData(params)
             : refetch(params)
-    }, [activeAccountAddress, fetchAccountData, refetch]);
+    }, [activeAccountAddress, fetchAccountData, refetch, blockHeight]);
 
     return {
         ...data,
