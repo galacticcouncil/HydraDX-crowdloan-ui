@@ -120,7 +120,7 @@ export const Dashboard = () => {
                         'You will receive ' + (100 * parseFloat(reimbursmentMultiplier || "0.1 ") 
                             + "% of rewards for your contributions at this moment" ) 
                         : 'We didn\'t catch safe lead yet, you will still receive highest reward at this moment!'))
-                    : 'behind in the target auction, help us get the slot and you will receive highest reward now!'
+                    : 'behind in the target auction. Help us get the slot and you will receive highest reward now!'
                 )}
             </div>
             <div className="charts">
