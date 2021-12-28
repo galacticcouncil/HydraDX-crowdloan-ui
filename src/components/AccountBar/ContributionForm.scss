@@ -10,13 +10,13 @@
         border-bottom: 2px solid $dark;
     }
 
-    &__current {
-        padding-bottom: 1em;
-    }
-
     &__form {
         display: flex;
         flex-direction: column;
         gap: 1em;
     }
+}
+
+.status {
+    
 }

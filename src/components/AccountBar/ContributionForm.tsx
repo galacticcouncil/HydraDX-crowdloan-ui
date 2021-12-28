@@ -103,8 +103,8 @@ export const ContributionForm = ({
         </div>
         
         <div className='contribute__current'>
-            <div>Current contribution reward: {millify( parseFloat( contributionRewards.current))} HDX</div>
-            <div>Minimal contribution reward: {millify( parseFloat( contributionRewards.minimal))} HDX</div>
+            <div>Current reward: {millify( parseFloat( contributionRewards.current))} HDX</div>
+            <div>Minimal reward: {millify( parseFloat( contributionRewards.minimal))} HDX</div>
         </div>
 
         <div>
@@ -122,6 +122,7 @@ export const ContributionForm = ({
                         (({ field }) => (
                             <MaskedInput 
                                 mask={currencyMask}
+                                autoComplete='off'
                                 {...field}
                                 onChange={event => {
                                     const value = event.target.value.replaceAll(thousandsSeparatorSymbol, '');
@@ -147,18 +148,24 @@ export const ContributionForm = ({
                     }
                 </button>
 
-                {(() => {
-                    switch(contributionStatus){
-                        case ContributionStatus.FAILED:
-                            return 'Contribution failed'
-                        case ContributionStatus.SUCCESSFUL:
-                            return 'Contribution successful'
-                        case ContributionStatus.LOADING:
-                            return 'Contribution loading'
-                        default:
-                            return '';
-                    }
-                })()}
+                <div className='status'>
+                    {(() => {
+                        return form.formState.errors.amount ? <></> : <div className='status__info'>Minimal contribution is 5 DOT</div>
+                    })()}
+                    {(() => {
+                        switch(contributionStatus){
+                            case ContributionStatus.FAILED:
+                                return <div className='status__error'>'Contribution failed'</div>
+                            case ContributionStatus.SUCCESSFUL:
+                                return <div className='status__info'>'Contribution successful'</div>
+                            case ContributionStatus.LOADING:
+                                return <div className='status__error'>'Contribution loading'</div>
+                            default:
+                                return '';
+                        }
+                    })()}
+                </div>
+
             </form>
         </div>
     </div>
