@@ -104,8 +104,8 @@ export const ContributionForm = ({
         </div>
         
         <div className='contribute__current'>
-            <div>Current reward: {millify( parseFloat( contributionRewards.current))} HDX</div>
-            <div>Minimum reward: {millify( parseFloat( contributionRewards.minimal))} HDX</div>
+            <div>Current rewards: {millify( parseFloat( contributionRewards.current))} HDX</div>
+            <div>Minimum rewards: {millify( parseFloat( contributionRewards.minimal))} HDX</div>
         </div>
 
         <div>

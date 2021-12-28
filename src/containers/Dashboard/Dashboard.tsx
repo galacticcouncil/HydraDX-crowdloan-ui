@@ -90,6 +90,14 @@ export const Dashboard = () => {
         >
           Help
         </a>
+        <a
+          className="help"
+          href="https://docs.hydradx.io/hydradx_crowdloan"
+          rel="noreferrer"
+          target="_blank"
+        >
+          Docs
+        </a>
       </div>
 
       <div className="dashboard">
@@ -125,6 +133,17 @@ export const Dashboard = () => {
                         "% of rewards for your contributions at this moment")
                     : "We didn't secure a safe lead yet, you will still receive the highest rewards at this moment!")
                 : "still catching up for the target auction. If you help us secure a slot, you will receive the highest rewards possible!"}
+                {" "}
+                <div className="small-link-wrapper">
+                  <a
+                    className='small-link'
+                    href="https://docs.hydradx.io/hydradx_crowdloan"
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    Learn more here.
+                  </a>
+                </div>
             </div>
             <div className="charts">
               <div className="target chart">
