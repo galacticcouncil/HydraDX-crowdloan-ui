@@ -116,15 +116,15 @@ export const Dashboard = () => {
             <div className="dashboard__botton__graph__status">
               We are{" "}
               {parseFloat(calculateTargetPercentage()) > 115
-                ? "winning in the target auction by " +
+                ? "leading the race for the target auction by " +
                   (parseFloat(calculateTargetPercentage()) - 100).toFixed(0) +
                   "%. " +
                   (parseFloat(calculateTargetPercentage()) > 115
                     ? "You will receive " +
                       (100 * parseFloat(reimbursmentMultiplier || "0.1 ") +
                         "% of rewards for your contributions at this moment")
-                    : "We didn't catch safe lead yet, you will still receive highest reward at this moment!")
-                : "behind in the target auction. Help us get the slot and you will receive highest reward now!"}
+                    : "We didn't secure a safe lead yet, you will still receive the highest rewards at this moment!")
+                : "still catching up for the target auction. If you help us secure a slot, you will receive the highest rewards possible!"}
             </div>
             <div className="charts">
               <div className="target chart">
