@@ -123,6 +123,7 @@ export const ContributionForm = ({
                             <MaskedInput 
                                 mask={currencyMask}
                                 autoComplete='off'
+                                placeholder='100 000'
                                 {...field}
                                 onChange={event => {
                                     const value = event.target.value.replaceAll(thousandsSeparatorSymbol, '');
