@@ -153,6 +153,8 @@ export const ContributionForm = ({
                             return 'Contribution failed'
                         case ContributionStatus.SUCCESSFUL:
                             return 'Contribution successful'
+                        case ContributionStatus.LOADING:
+                            return 'Contribution loading'
                         default:
                             return '';
                     }
