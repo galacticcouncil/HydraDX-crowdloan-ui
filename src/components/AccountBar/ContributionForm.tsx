@@ -164,7 +164,7 @@ export const ContributionForm = ({
                             case ContributionStatus.SUCCESSFUL:
                                 return <div className='status__info'>Contribution successful</div>
                             case ContributionStatus.LOADING:
-                                return <div className='status__error'>Contribution loading</div>
+                                return <div className='status__info'>Contribution loading</div>
                             default:
                                 return '';
                         }
