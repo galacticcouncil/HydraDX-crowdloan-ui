@@ -99,12 +99,12 @@ export const ContributionForm = ({
         <div className='contribute__past'>
             <div>Your contribution: {totalContributionAmount?.toString()} DOT</div>
             {/* <div>Total rewards: {totalRewards?.totalDillutedRewards.toString()}</div> */}
-            <div>Your minimal rewards: {totalRewards?.totalMinimalRewards.toString()} HDX</div>
+            <div>Your minimum rewards: {totalRewards?.totalMinimalRewards.toString()} HDX</div>
         </div>
         
         <div className='contribute__current'>
             <div>Current reward: {millify( parseFloat( contributionRewards.current))} HDX</div>
-            <div>Minimal reward: {millify( parseFloat( contributionRewards.minimal))} HDX</div>
+            <div>Minimum reward: {millify( parseFloat( contributionRewards.minimal))} HDX</div>
         </div>
 
         <div>
