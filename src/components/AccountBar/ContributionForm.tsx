@@ -8,6 +8,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { ContributionStatus } from 'src/containers/Dashboard/hooks/useHandleCrowdloanContribute';
 import { calculateCurrentContributionReward, calculateCurrentDillutedContributionReward, calculateDillutedContributionReward, calculateMinimalContributionReward, calculateMinimalDillutedContributionReward } from 'src/lib/calculateRewards';
 import { watch } from 'fs';
+import millify from 'millify';
 
 export interface FormFields {
     amount: string
@@ -39,8 +40,8 @@ export const currencyMask = createNumberMask({
     allowDecimal: true,
     decimalSymbol: '.',
     // TODO: adjust decimal limit dependin on the selected MetricUnit
-    decimalLimit: 1,
-    // integerLimit: 7,
+    decimalLimit: 3,
+    integerLimit: 10,
     allowNegative: false,
     allowLeadingZeroes: false,
 })
@@ -77,7 +78,12 @@ export const ContributionForm = ({
                 totalRewardsDistributed: incentive.totalRewardsDistributed
             }).toFixed(6),
             minimal: calculateMinimalDillutedContributionReward(
-                calculateMinimalContributionReward(watchAmount || '0')
+                calculateCurrentContributionReward({
+                    contributionAmount: watchAmount || '0',
+                    leadPercentageRate: new BigNumber(incentive?.leadPercentageRate)
+                        .dividedBy(new BigNumber(10).pow(6))
+                        .toNumber()
+                })
             ).toFixed(6)
         })
     }, [watchAmount, incentive]);
@@ -88,28 +94,28 @@ export const ContributionForm = ({
             : setShowAccountSelector(true)
     }, [activeAccount, setShowAccountSelector, onContribute]);
 
-    return <div>
-        <h2>ContributionForm</h2>
-        <div>
-            <p>Total contribution amount: {totalContributionAmount?.toString()}</p>
-            <p>Total dilluted rewards: {totalRewards?.totalDillutedRewards.toString()}</p>
-            <p>Total minimal rewards: {totalRewards?.totalMinimalRewards.toString()}</p>
+    return <div className='contribute'>
+        <h2>Contribute</h2>
+        <div className='contribute__past'>
+            <div>Your contribution: {totalContributionAmount?.toString()} DOT</div>
+            {/* <div>Total rewards: {totalRewards?.totalDillutedRewards.toString()}</div> */}
+            <div>Your minimal rewards: {totalRewards?.totalMinimalRewards.toString()} HDX</div>
         </div>
         
-        <div>
-            <p>Current contribution reward: {contributionRewards.current}</p>
-            <p>Minimal contribution reward: {contributionRewards.minimal}</p>
+        <div className='contribute__current'>
+            <div>Current contribution reward: {millify( parseFloat( contributionRewards.current))} HDX</div>
+            <div>Minimal contribution reward: {millify( parseFloat( contributionRewards.minimal))} HDX</div>
         </div>
 
         <div>
-            <form onSubmit={form.handleSubmit(handleSubmit)}>
-                {form.formState.isDirty && form.formState.isValid ? 'valid' : 'not valid'}
+            <form className='contribute__form' onSubmit={form.handleSubmit(handleSubmit)}>
+                {/* {form.formState.isDirty && form.formState.isValid ? 'valid' : 'not valid'} */}
                 <Controller 
                     control={form.control}
                     name={'amount'}
                     rules={{
                         validate: value => (
-                            value && parseFloat(value.replaceAll(thousandsSeparatorSymbol, '')) >= 0.5
+                            value && parseFloat(value.replaceAll(thousandsSeparatorSymbol, '')) >= 5
                         )
                     }}
                     render={
@@ -130,7 +136,7 @@ export const ContributionForm = ({
 
                 <button 
                     type='submit'
-                    disabled={!apiReady}>
+                    disabled={!apiReady || !(form.formState.isDirty && form.formState.isValid)}>
                     {!apiReady
                         ? 'Connecting...'
                         : (
