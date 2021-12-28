@@ -11,6 +11,15 @@
     &__past {
         padding-bottom: 1em;
         border-bottom: 2px solid $dark;
+        display: flex;
+        flex-direction: column;
+        gap: 0.1em;
+    }
+
+    &__current {
+        display: flex;
+        flex-direction: column;
+        gap: 0.1em;
     }
 
     &__form {
@@ -21,6 +30,10 @@
 }
 
 .status {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3em;
+
     & .status__error {
         color: $red;
     }
