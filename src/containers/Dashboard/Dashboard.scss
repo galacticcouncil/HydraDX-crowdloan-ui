@@ -105,6 +105,7 @@
 
             &__status {
                 flex-shrink: 1;
+                padding-bottom: 2em;
             }
 
             .charts {
@@ -166,4 +167,9 @@
             flex-shrink: 0;
         }
     }
+}
+
+// no idea why BEM above isnt working
+.dashboard__botton__graph__status {
+    padding-bottom: 1rem;
 }
