@@ -22,33 +22,35 @@ export const useHandleCrowdloanContribute = () => {
 
         setContributionStatus(ContributionStatus.LOADING);
         (async () => {
-            const { signer } = await web3FromAddress(activeAccountAddress);
-
             try {
-                api.tx.crowdloan.contribute(
+                const { signer } = await web3FromAddress(activeAccountAddress);
+
+                await api.tx.crowdloan.contribute(
                     config.ownParaId,
                     toE10Precision(formFields.amount),
                     null
                 )
-                .signAndSend(
-                    activeAccountAddress,
-                    { signer },
-                    ({ status, events }) => {
-                        if (status.isInBlock || status.isFinalized) {
-                            events
-                                .filter(({ event }) => api.events.system.ExtrinsicFailed.is(event))
-                                .length
-                                ? setContributionStatus(ContributionStatus.FAILED)
-                                : setContributionStatus(ContributionStatus.SUCCESSFUL)
+                    .signAndSend(
+                        activeAccountAddress,
+                        { signer },
+                        ({ status, events }) => {
+                            if (status.isInBlock || status.isFinalized) {
+                                events
+                                    .filter(({ event }) => api.events.system.ExtrinsicFailed.is(event))
+                                    .length
+                                        ? setContributionStatus(ContributionStatus.FAILED)
+                                        : setContributionStatus(ContributionStatus.SUCCESSFUL)
+                            }
                         }
-                    }
-                )
+                    )
             } catch (e) {
-                console.error(e);
+                console.log('failed');
+                console.error('contribution failed', e);
                 setContributionStatus(ContributionStatus.FAILED)
             }
         })();
     }, [api, activeAccountAddress]);
 
+    console.log('contributionStatus', contributionStatus);
     return { handleCrowdloanContribute, contributionStatus }
 }
