@@ -123,7 +123,7 @@ export const Dashboard = () => {
             <h2>Status</h2>
             <div className="dashboard__botton__graph__status">
               We are{" "}
-              {parseFloat(calculateTargetPercentage()) > 115
+              {parseFloat(calculateTargetPercentage()) > 100
                 ? "leading the race for the target auction by " +
                   (parseFloat(calculateTargetPercentage()) - 100).toFixed(0) +
                   "%. " +
@@ -148,7 +148,7 @@ export const Dashboard = () => {
             <div className="charts">
               <div className="target chart">
                 <div
-                  style={{ height: calculateTargetPercentage() + "%" }}
+                  style={{ height: (parseFloat(calculateTargetPercentage()) > 100 ? 100 : calculateTargetPercentage()) + "%" }}
                   className="barChart"
                 ></div>
                 <div className="barChartNumber">
