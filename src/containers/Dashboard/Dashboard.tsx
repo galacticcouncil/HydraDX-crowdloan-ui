@@ -122,8 +122,8 @@ export const Dashboard = () => {
           <div className="dashboard__bottom__graph">
             <h2>Status</h2>
             <div className="dashboard__botton__graph__status">
-              We are{" "}
-              {parseFloat(calculateTargetPercentage()) > 100
+              {" "}
+              {/* {parseFloat(calculateTargetPercentage()) > 100
                 ? "leading the race for the target auction by " +
                   (parseFloat(calculateTargetPercentage()) - 100).toFixed(0) +
                   "%. " +
@@ -132,17 +132,21 @@ export const Dashboard = () => {
                       (100 * parseFloat(reimbursmentMultiplier || "0.1 ") +
                         "% of rewards for your contributions at this moment")
                     : "We didn't secure a safe lead yet, you will still receive the highest rewards at this moment!")
-                : "still catching up for the target auction. If you help us secure a slot, you will receive the highest rewards possible!"}
-                {" "}
-                <div className="small-link-wrapper">
-                  <a
+                : "still catching up for the target auction. If you help us secure a slot, you will receive the highest rewards possible!"} */}
+                We have won the race for our target auction, we are therefore not taking any more contributions. Thanks for all of your support!
+                <br/><br/>
+                Learn more {" "}
+                <a
                     className='small-link'
                     href="https://docs.hydradx.io/hydradx_crowdloan"
                     rel="noreferrer"
                     target="_blank"
                   >
-                    Learn more here.
-                  </a>
+                    {" "}
+                     here
+                  </a>.
+                <div className="small-link-wrapper">
+                  
                 </div>
             </div>
             <div className="charts">
@@ -160,14 +164,15 @@ export const Dashboard = () => {
                   /{" "}
                   {millify(
                     parseFloat(
-                      fromE10Precision(siblingParachain?.fundsPledged || "0")
+                      // fromE10Precision(siblingParachain?.fundsPledged || "0")
+                      '1688307'
                     )
                   )}{" "}
                   DOT TARGET
                 </div>
               </div>
 
-              <div className="reward chart">
+              {/* <div className="reward chart">
                 <div
                   style={{
                     height:
@@ -179,7 +184,7 @@ export const Dashboard = () => {
                   {100 * parseFloat(reimbursmentMultiplier || "0.1") + "%"}{" "}
                   REWARD
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
           {/* form */}
