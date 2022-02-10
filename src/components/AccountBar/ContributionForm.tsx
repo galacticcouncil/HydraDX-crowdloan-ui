@@ -125,6 +125,7 @@ export const ContributionForm = ({
                                 mask={currencyMask}
                                 autoComplete='off'
                                 placeholder='100 000'
+                                disabled={true}
                                 {...field}
                                 onChange={event => {
                                     const value = event.target.value.replaceAll(thousandsSeparatorSymbol, '');
@@ -139,15 +140,8 @@ export const ContributionForm = ({
 
                 <button 
                     type='submit'
-                    disabled={!apiReady || !(form.formState.isDirty && form.formState.isValid)}>
-                    {!apiReady
-                        ? 'Connecting...'
-                        : (
-                            !activeAccount
-                                ? 'No account connected'
-                                : 'Contribute'
-                        )
-                    }
+                    disabled={true}>
+                    Crowdloan finished
                 </button>
 
                 <div className='status'>
