@@ -165,7 +165,8 @@ export const Dashboard = () => {
                   {millify(
                     parseFloat(
                       // fromE10Precision(siblingParachain?.fundsPledged || "0")
-                      '1688307'
+                      // '1688307'
+                      '2100000'
                     )
                   )}{" "}
                   DOT TARGET
