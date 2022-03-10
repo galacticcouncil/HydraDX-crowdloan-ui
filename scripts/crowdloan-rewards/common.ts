@@ -20,12 +20,12 @@ export const generateVestings = function(
 ): DynamicVestingInfo[] {
     const vestingDuration = new BigNumber(endBlock).minus(new BigNumber(startBlock));
 
-    const totalRewards = triple ? new BigNumber(rewards).multipliedBy(3) : rewards;
+    const totalRewards = triple ? new BigNumber(rewards).multipliedBy(3) : new BigNumber(rewards);
 
-    const rewardsPerPeriodFloat = new BigNumber(totalRewards).dividedBy(vestingDuration);
+    const rewardsPerPeriodFloat = totalRewards.dividedBy(vestingDuration);
 
     const rewardsSumOfDecimalAmounts = 
-        new BigNumber(rewardsPerPeriodFloat.modulo(1))
+        rewardsPerPeriodFloat.modulo(1)
         .multipliedBy(vestingDuration)
         .decimalPlaces(0, BigNumber.ROUND_UP);
 
@@ -34,7 +34,7 @@ export const generateVestings = function(
         .decimalPlaces(0, 1);
 
     const rewardsMinusSumOfDecimals = 
-        new BigNumber(rewards)
+        totalRewards
         .minus(rewardsSumOfDecimalAmounts);
 
     return [
