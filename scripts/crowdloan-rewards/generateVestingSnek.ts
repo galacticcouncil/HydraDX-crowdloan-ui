@@ -35,8 +35,10 @@ export type OutputContribution = {
   createdAt: string,
 };
 
-const startBlock = '9334719';
-const endBlock = '13834719';
+// At or around 24 September 2021, 18.00 (1 day after Basilisk auction win)
+const startBlock = '6965740';
+// At or around 05 August 2022, 18.00 (1 day before end of Basilisk parachain lease)
+const endBlock = '11501740';
 const triple = true;
 
 const vestingBatch: DynamicVestingInfo[] = (bsxCrowdloanData as Report).rewards.flatMap(reward => {
@@ -45,4 +47,4 @@ const vestingBatch: DynamicVestingInfo[] = (bsxCrowdloanData as Report).rewards.
     );
 });
 
-writeToFS('../hdx-vesting-snek-crowdloandgd.json', vestingBatch);
+writeToFS('./data/hdx-vesting-snek-crowdloan.json', vestingBatch);
