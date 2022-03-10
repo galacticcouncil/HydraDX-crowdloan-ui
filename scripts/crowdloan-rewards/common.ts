@@ -30,7 +30,7 @@ export const generateVestings = function(
         .decimalPlaces(0, BigNumber.ROUND_UP);
 
     const rewardsPerPeriodFixed = 
-        new BigNumber(rewardsPerPeriodFloat)
+        rewardsPerPeriodFloat
         .decimalPlaces(0, 1);
 
     const rewardsMinusSumOfDecimals = 
