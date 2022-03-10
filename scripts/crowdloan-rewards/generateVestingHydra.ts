@@ -1,3 +1,5 @@
+// Generates vesting schedules for the HDX rewards for participants in Hydra crowdloan
+
 import BigNumber from "bignumber.js"
 import _ from 'lodash'
 import hdxCrowdloanData from '../data/hdx-rewards-hydra-crowdloan.json'
@@ -23,10 +25,11 @@ type Contribution = {
   totalContributed: string,
 }
 
-// Generates vesting schedules for the HDX Bonus for participants in Basilisk crowdloan
 
-const startBlock = '9334719';
-const endBlock = '13834719';
+// At or around 11 March 2022, 18.00 (day of onboarding HydraDX parachain)
+const startBlock = '9384940';
+// At or around 11 January 2024, 18.00 (one day before end of parachain lease)
+const endBlock = '19047340';
 const triple = false;
 
 const crowdloanContribs = (hdxCrowdloanData as hydraCrowdloanContributions).data.accounts;
@@ -50,4 +53,4 @@ const vestingBatch: DynamicVestingInfo[] = _.flatMap(rewardsPerContributor, func
     )
 });
 
-writeToFS('../hdx-vesting-hydra-crowdloan.json', vestingBatch);
+writeToFS('./data/hdx-vesting-hydra-crowdloan.json', vestingBatch);
