@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "generate-vesting-snek": "npx ts-node ./crowdloan-rewards/generateVestingSnek.ts",
-    "generate-vesting-hydra": "npx ts-node ./crowdloan-rewards/generateVestingHydra.ts"
+    "generate-vestings-snek": "npx ts-node ./crowdloan-rewards/generateVestingsSnek.ts",
+    "generate-vestings-hydra": "npx ts-node ./crowdloan-rewards/generateVestingsHydra.ts",
+    "perform-batch-vesting-call": "npx ts-node ./crowdloan-rewards/performBatchVestingCall.ts"
   },
   "author": "",
   "license": "ISC",

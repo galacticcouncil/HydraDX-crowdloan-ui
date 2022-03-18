@@ -3,7 +3,7 @@
 import BigNumber from "bignumber.js"
 import _ from 'lodash'
 import hdxCrowdloanData from '../data/hdx-rewards-hydra-crowdloan.json'
-import { DynamicVestingInfo, generateVestings, writeToFS } from './common'
+import { DynamicVestingInfo, generateVestings, writeToFS } from './common/generateVestings'
 
 type hydraCrowdloanContributions = {
   data: {

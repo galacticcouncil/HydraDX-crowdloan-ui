@@ -38,6 +38,17 @@ export const generateVestings = function(
         .minus(rewardsSumOfDecimalAmounts);
 
     return [
+        // For every period we distribute rewards per period rounded down to fixed point
+        {
+            destination: address,
+            schedule: {
+                amountToBeVested: rewardsMinusSumOfDecimals.toString(),
+                start: startBlock,
+                period: '1',
+                per_period: rewardsPerPeriodFixed.toString(),
+                period_count: vestingDuration.toString()
+            }
+        },
         // In the first period we distribute the rounded sum of all decimal amounts
         {
             destination: address,
@@ -49,17 +60,6 @@ export const generateVestings = function(
                 period_count: '1'
             }
             
-        },
-        // For every period we distribute rewards per period rounded down to fixed point
-        {
-            destination: address,
-            schedule: {
-                amountToBeVested: rewardsMinusSumOfDecimals.toString(),
-                start: startBlock,
-                period: '1',
-                per_period: rewardsPerPeriodFixed.toString(),
-                period_count: vestingDuration.toString()
-            }
         }
     ]
 };

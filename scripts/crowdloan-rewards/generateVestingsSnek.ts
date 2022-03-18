@@ -1,6 +1,6 @@
 
 import bsxCrowdloanData from '../data/hdx-rewards-snek-crowdloan.json'
-import { DynamicVestingInfo, generateVestings, writeToFS } from './common'
+import { DynamicVestingInfo, generateVestings, writeToFS } from './common/generateVestings'
 
 
 // Generates vesting schedules for the HDX Bonus for participants in Basilisk crowdloan
