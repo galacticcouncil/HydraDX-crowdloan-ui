@@ -1,7 +1,8 @@
 var assert = require('assert');
 import BigNumber from "bignumber.js"
-import { bindAll } from "lodash"
 import { log } from './performVestings'
+
+const HDX = new BigNumber(1_000_000_000_000);
 
 export type RewardsData = {
     address: string,
@@ -40,16 +41,17 @@ export const generateVestingsAndWriteToFs = function(
         return generateVestings(startBlock, endBlock, rewardData.address, rewards);
     });
 
-    validateVestingsData(vestingsData, totalRewards, triple);
+    let totalVestedRewards = calculateTotalVestedRewards(vestingsData);
+    validateRewards(totalRewards, totalVestedRewards);
 
     const vestingsPath = `./data/hdx-vesting-${prefix}-crowdloan.json`
     const totalRewardsPath = `./data/hdx-total-rewards-${prefix}-crowdloan.json`
 
     writeToFS(vestingsPath, vestingsData);
-    writeToFS(totalRewardsPath, { total_rewards: totalRewards });
+    writeToFS(totalRewardsPath, { total_rewards: totalVestedRewards });
 
     log(`Vesting schedules for ${prefix} written in ${vestingsPath}`);
-    log(`Total rewards distributed: ${totalRewards}`);
+    log(`Total rewards distributed: ${totalVestedRewards}`);
     log(`Total rewards written in ${totalRewardsPath}`)
 };
 
@@ -70,14 +72,14 @@ const generateVestings = function(
 
     const rewardsPerPeriodFixed = rewardsPerPeriodFloat.decimalPlaces(0, 1);
 
-    const rewardsMinusSumOfDecimals = rewards.minus(rewardsSumOfDecimalAmounts);
+    const totalPeriodicRewards = rewardsPerPeriodFixed.multipliedBy(vestingDuration);
 
     return [
         // For every period we distribute rewards per period rounded down to fixed point
         {
             destination: address,
             schedule: {
-                amountToBeVested: rewardsMinusSumOfDecimals.toString(),
+                amountToBeVested: totalPeriodicRewards.toString(),
                 start: startBlock,
                 period: '1',
                 per_period: rewardsPerPeriodFixed.toString(),
@@ -99,16 +101,22 @@ const generateVestings = function(
     ]
 };
 
-function validateVestingsData(
-    vestingsData: DynamicVestingInfo[],
-    totalRewards: BigNumber,
-    triple: Boolean
-) {
-    const totalVestedRewards = vestingsData.map(
-            vesting => new BigNumber(vesting.schedule.amountToBeVested)
-        ).reduce((sum, current) => sum.plus(new BigNumber(current)));
+function calculateTotalVestedRewards(vestingsData: DynamicVestingInfo[]): BigNumber {
+    return vestingsData.map(
+        vesting => new BigNumber(vesting.schedule.per_period)
+                    .multipliedBy(new BigNumber(vesting.schedule.period_count))
+    ).reduce((sum, current) => sum.plus(new BigNumber(current)));
+}
 
-    assert(totalVestedRewards.isEqualTo(totalRewards));
+function validateRewards(totalRewards: BigNumber, totalVestedRewards: BigNumber) {
+    const differenceInRewards = totalVestedRewards.minus(totalRewards).absoluteValue();
+    
+    // There will always be a small difference in total rewards due to rounding
+    // here we make sure that the difference is not greater than 1 HDX
+    //
+    assert(differenceInRewards.isLessThan(HDX));
+
+    log(`Difference in rewards is ${differenceInRewards} which is less than 1 HDX`);
 }
 
 const writeToFS = function(path: String, input: any) {
