@@ -2,8 +2,8 @@
 
 import BigNumber from "bignumber.js"
 import _ from 'lodash'
-import hdxCrowdloanData from '../data/hdx-rewards-hydra-crowdloan.json'
-import { DynamicVestingInfo, generateVestings, writeToFS } from './common/generateVestings'
+import hdxCrowdloanData from '../data/hdx-raw-rewards-hydra-crowdloan.json'
+import { RewardsData, generateVestingsAndWriteToFs } from './common/generateVestings'
 
 type hydraCrowdloanContributions = {
   data: {
@@ -32,25 +32,42 @@ const startBlock = '9384940';
 const endBlock = '19047340';
 const triple = false;
 
-const crowdloanContribs = (hdxCrowdloanData as hydraCrowdloanContributions).data.accounts;
-const groupedContribitors = _.groupBy(crowdloanContribs, contrib => contrib.accountId);
+function main() {
+  let rewardsData: RewardsData[] = normalizeRewardsData();
 
-let rewardsPerContributor = {};
+  generateVestingsAndWriteToFs(rewardsData, startBlock, endBlock, triple, 'hydra');
+}
 
-_.flatMap(groupedContribitors, function(contributors, k) {
-  _.flatMap(contributors, function(contributor, k2) {
-    let rewards = new BigNumber(0);
-    _.flatMap(contributor.contributions, function(contribution) {
-      rewards = rewards.plus(new BigNumber(contribution.contributionReward));
-    })
-    rewardsPerContributor[k] = rewards.toString();
-  })
-});
+function normalizeRewardsData(): RewardsData[] {
+  const crowdloanContribs = (hdxCrowdloanData as hydraCrowdloanContributions).data.accounts;
+  const groupedContributors = _.groupBy(crowdloanContribs, contrib => contrib.accountId);
 
-const vestingBatch: DynamicVestingInfo[] = _.flatMap(rewardsPerContributor, function(reward, contributor) {
-  return generateVestings(
-    startBlock, endBlock, contributor, reward, triple
-    )
-});
+  let rewardsData: RewardsData[] = []
 
-writeToFS('./data/hdx-vesting-hydra-crowdloan.json', vestingBatch);
+  _.flatMap(groupedContributors, function(contributors, k) {
+    _.flatMap(contributors, function(contributor, k2) {
+      let rewards = new BigNumber(0);
+      _.flatMap(contributor.contributions, function(contribution) {
+        rewards = rewards.plus(new BigNumber(contribution.contributionReward));
+      });
+
+      let individualRewardsData: RewardsData = {
+        address: k,
+        totalRewards: rewards.toString()
+      }
+
+      rewardsData.push(individualRewardsData);
+    });
+  });
+
+  return rewardsData;
+}
+
+
+try {
+  main()
+
+} catch(e) {
+  console.log(e)
+  process.exit()
+}

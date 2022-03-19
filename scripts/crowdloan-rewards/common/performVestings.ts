@@ -36,7 +36,6 @@ const sendAndWaitFinalization = ({from, tx, printEvents = []}) => new Promise(re
   })
 );
 
-
 export async function performVestingCall(vestings: DynamicVestingInfo[]): Promise<any> {
   await cryptoWaitReady();
   const provider = new WsProvider(RPC);

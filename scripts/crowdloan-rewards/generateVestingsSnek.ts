@@ -1,6 +1,6 @@
 
-import bsxCrowdloanData from '../data/hdx-rewards-snek-crowdloan.json'
-import { DynamicVestingInfo, generateVestings, writeToFS } from './common/generateVestings'
+import bsxCrowdloanData from '../data/hdx-raw-rewards-snek-crowdloan.json'
+import { RewardsData, generateVestingsAndWriteToFs } from './common/generateVestings'
 
 
 // Generates vesting schedules for the HDX Bonus for participants in Basilisk crowdloan
@@ -41,10 +41,27 @@ const startBlock = '6965740';
 const endBlock = '11501740';
 const triple = true;
 
-const vestingBatch: DynamicVestingInfo[] = (bsxCrowdloanData as Report).rewards.flatMap(reward => {
-    return generateVestings(
-        startBlock, endBlock, reward.address, reward.totalHdxReward, triple
-    );
-});
+function main() {
+  const rewardsData: RewardsData[] = normalizeRewardsData();
 
-writeToFS('./data/hdx-vesting-snek-crowdloan.json', vestingBatch);
+  generateVestingsAndWriteToFs(rewardsData, startBlock, endBlock, triple, 'snek');
+}
+
+function normalizeRewardsData(): RewardsData[] {
+  return (bsxCrowdloanData as Report).rewards.map(reward => {
+    let data: RewardsData = {
+      address: reward.address,
+      totalRewards: reward.totalHdxReward
+    };
+
+    return data;
+  });
+}
+
+try {
+  main()
+
+} catch(e) {
+  console.log(e)
+  process.exit()
+}

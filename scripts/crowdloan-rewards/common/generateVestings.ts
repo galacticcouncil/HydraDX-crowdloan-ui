@@ -1,4 +1,13 @@
+var assert = require('assert');
 import BigNumber from "bignumber.js"
+import { bindAll } from "lodash"
+import { log } from './performVestings'
+
+export type RewardsData = {
+    address: string,
+    totalRewards: string
+}
+
 
 export type DynamicVestingInfo = {
   destination: string,
@@ -11,31 +20,57 @@ export type DynamicVestingInfo = {
   }
 }
 
-export const generateVestings = function(
+export const generateVestingsAndWriteToFs = function(
+    rewards: RewardsData[],
+    startBlock: string,
+    endBlock: string,
+    triple: boolean,
+    prefix: string
+) {
+    log(`Generating vesting schedules for ${prefix} crowdloaners`);
+
+    let totalRewards = new BigNumber(0);
+
+    let vestingsData = rewards.flatMap(rewardData => {
+        let rewards = new BigNumber(rewardData.totalRewards);
+        rewards = triple ? rewards.multipliedBy(3) : rewards;
+
+        totalRewards = totalRewards.plus(rewards);
+
+        return generateVestings(startBlock, endBlock, rewardData.address, rewards);
+    });
+
+    validateVestingsData(vestingsData, totalRewards, triple);
+
+    const vestingsPath = `./data/hdx-vesting-${prefix}-crowdloan.json`
+    const totalRewardsPath = `./data/hdx-total-rewards-${prefix}-crowdloan.json`
+
+    writeToFS(vestingsPath, vestingsData);
+    writeToFS(totalRewardsPath, { total_rewards: totalRewards });
+
+    log(`Vesting schedules for ${prefix} written in ${vestingsPath}`);
+    log(`Total rewards distributed: ${totalRewards}`);
+    log(`Total rewards written in ${totalRewardsPath}`)
+};
+
+const generateVestings = function(
   startBlock: string,
   endBlock: string,
   address: string,
-  rewards: string,
-  triple: boolean
+  rewards: BigNumber
 ): DynamicVestingInfo[] {
     const vestingDuration = new BigNumber(endBlock).minus(new BigNumber(startBlock));
 
-    const totalRewards = triple ? new BigNumber(rewards).multipliedBy(3) : new BigNumber(rewards);
-
-    const rewardsPerPeriodFloat = totalRewards.dividedBy(vestingDuration);
+    const rewardsPerPeriodFloat = rewards.dividedBy(vestingDuration);
 
     const rewardsSumOfDecimalAmounts = 
         rewardsPerPeriodFloat.modulo(1)
         .multipliedBy(vestingDuration)
         .decimalPlaces(0, BigNumber.ROUND_UP);
 
-    const rewardsPerPeriodFixed = 
-        rewardsPerPeriodFloat
-        .decimalPlaces(0, 1);
+    const rewardsPerPeriodFixed = rewardsPerPeriodFloat.decimalPlaces(0, 1);
 
-    const rewardsMinusSumOfDecimals = 
-        totalRewards
-        .minus(rewardsSumOfDecimalAmounts);
+    const rewardsMinusSumOfDecimals = rewards.minus(rewardsSumOfDecimalAmounts);
 
     return [
         // For every period we distribute rewards per period rounded down to fixed point
@@ -64,12 +99,23 @@ export const generateVestings = function(
     ]
 };
 
-export const writeToFS = function(path: String, vestingBatch: DynamicVestingInfo[]) {
+function validateVestingsData(
+    vestingsData: DynamicVestingInfo[],
+    totalRewards: BigNumber,
+    triple: Boolean
+) {
+    const totalVestedRewards = vestingsData.map(
+            vesting => new BigNumber(vesting.schedule.amountToBeVested)
+        ).reduce((sum, current) => sum.plus(new BigNumber(current)));
+
+    assert(totalVestedRewards.isEqualTo(totalRewards));
+}
+
+const writeToFS = function(path: String, input: any) {
   const fs = require('fs')
 
-  fs.writeFile (path, JSON.stringify(vestingBatch, null, 4), function(err) {
+  fs.writeFile (path, JSON.stringify(input, null, 4), function(err) {
           if (err) throw err
-          console.log('complete')
       }
   );
 }
