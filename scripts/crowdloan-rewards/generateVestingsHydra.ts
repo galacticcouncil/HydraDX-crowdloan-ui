@@ -2,7 +2,7 @@
 
 import BigNumber from "bignumber.js"
 import hdxCrowdloanData from '../data/hdx-raw-rewards-hydra-crowdloan.json'
-import { RewardsData, generateVestingsAndWriteToFs } from './common/generateVestings'
+import { RewardsData, generateVestingsAndTransfers } from './common/generateVestings'
 
 type hydraCrowdloanContributions = {
   data: {
@@ -34,7 +34,7 @@ const triple = false;
 function main() {
   let rewardsData: RewardsData[] = normalizeRewardsData();
 
-  generateVestingsAndWriteToFs(rewardsData, startBlock, endBlock, 'hydra');
+  generateVestingsAndTransfers(rewardsData, startBlock, endBlock, 'hydra');
 }
 
 function normalizeRewardsData(): RewardsData[] {

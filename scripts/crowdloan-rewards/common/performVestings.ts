@@ -5,7 +5,8 @@ const { encodeAddress, cryptoWaitReady } = require("@polkadot/util-crypto");
 const { stringToU8a } = require("@polkadot/util");
 const assert = require("assert");
 
-import { DynamicVestingInfo } from './generateVestings'
+import { add } from 'lodash';
+import { DynamicVestingInfo, TransferData } from './generateVestings'
 
 const ACCOUNT_SECRET = process.env.ACCOUNT_SECRET || "//Alice";
 const RPC = process.env.RPC_SERVER || "ws://127.0.0.1:9988";
@@ -36,7 +37,10 @@ const sendAndWaitFinalization = ({from, tx, printEvents = []}) => new Promise(re
   })
 );
 
-export async function performVestingCall(vestings: DynamicVestingInfo[]): Promise<any> {
+export async function performVestingCall(
+  vestingsData: DynamicVestingInfo[],
+  transfersData: TransferData[]
+): Promise<any> {
   await cryptoWaitReady();
   const provider = new WsProvider(RPC);
   const api = await ApiPromise.create({provider});
@@ -51,13 +55,31 @@ export async function performVestingCall(vestings: DynamicVestingInfo[]): Promis
   log(`connected to ${RPC} (${chain} ${nodeVersion})`);
   log(`rewards account: ${VESTINGS_ACCOUNT}`);
 
-  const vestingSchedules = vestings.map(({destination, schedule}) =>
-    api.tx.sudo.sudoAs(VESTINGS_ACCOUNT, api.tx.vesting.vestedTransfer(destination, schedule))
-  );
+  // const vestingSchedules = vestingsData.map(({destination, schedule}) =>
+  //   api.tx.sudo.sudoAs(VESTINGS_ACCOUNT, api.tx.vesting.vestedTransfer(destination, schedule))
+  // );
 
-  log(`vestingSchedules generated ${vestingSchedules.length}`);
+  let transactions = [];
 
-  const batch = api.tx.utility.batch(vestingSchedules);
+  vestingsData.forEach(function(vesting) {
+    const address = vesting.destination;
+    transactions.push(
+      api.tx.sudo.sudoAs(VESTINGS_ACCOUNT, api.tx.vesting.vestedTransfer(address, vesting.schedule))
+    );
+
+    let amountToBeTransferred = transfersData.filter(transfer => transfer.address == address)[0].amountToBeTransferred;
+    transactions.push(
+      api.tx.sudo.sudoAs(VESTINGS_ACCOUNT, api.tx.balances.forceTransfer(VESTINGS_ACCOUNT, address, amountToBeTransferred))
+    );
+
+    transactions.push(
+      api.tx.sudo.sudoAs(VESTINGS_ACCOUNT, api.tx.vesting.claimFor(address))
+    );
+  });
+
+  log(`Transactions to be completed ${transactions.length}`);
+
+  const batch = api.tx.utility.batch(transactions);
 
   let { maxExtrinsic: weightLimit } = api.consts.system.blockWeights.perClass.normal;
   const { weight } = await batch.paymentInfo(sendFrom);
@@ -69,8 +91,8 @@ export async function performVestingCall(vestings: DynamicVestingInfo[]): Promis
   const blocks = weight.div(weightLimit).toNumber() + 1;
   log(`Batch will be split into ${blocks} blocks`);
 
-  const vestingsPerBlock = Math.ceil(vestingSchedules.length / blocks);
-  const chunks = chunkify(vestingSchedules, vestingsPerBlock)
+  const vestingsPerBlock = Math.ceil(transactions.length / blocks);
+  const chunks = chunkify(transactions, vestingsPerBlock)
     .map(vestings => api.tx.utility.batch(vestings));
 
   const weights = await Promise.all(

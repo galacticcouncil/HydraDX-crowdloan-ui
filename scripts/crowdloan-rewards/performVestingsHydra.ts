@@ -1,8 +1,9 @@
 const vestingsHydra = require("../data/hdx-vesting-hydra-crowdloan.json");
+const transfersHydra = require("../data/hdx-transfers-hydra-crowdloan.json");
 import { log, performVestingCall } from './common/performVestings';
 
 function main() {
-  performVestingCall(vestingsHydra);
+  performVestingCall(vestingsHydra, transfersHydra);
 }
 
 try {

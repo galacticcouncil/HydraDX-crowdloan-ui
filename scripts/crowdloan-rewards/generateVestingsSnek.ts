@@ -1,7 +1,7 @@
 
 import BigNumber from "bignumber.js"
 import bsxCrowdloanData from '../data/hdx-raw-rewards-snek-crowdloan.json'
-import { RewardsData, generateVestingsAndWriteToFs } from './common/generateVestings'
+import { RewardsData, generateVestingsAndTransfers } from './common/generateVestings'
 
 
 // Generates vesting schedules for the HDX Bonus for participants in Basilisk crowdloan
@@ -44,7 +44,7 @@ const endBlock = '11501740';
 function main() {
   const rewardsData: RewardsData[] = normalizeRewardsData();
 
-  generateVestingsAndWriteToFs(rewardsData, startBlock, endBlock, 'snek');
+  generateVestingsAndTransfers(rewardsData, startBlock, endBlock, 'snek');
 }
 
 // Normalizes rewards data and triples
