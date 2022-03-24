@@ -1,4 +1,5 @@
 
+import BigNumber from "bignumber.js"
 import bsxCrowdloanData from '../data/hdx-raw-rewards-snek-crowdloan.json'
 import { RewardsData, generateVestingsAndWriteToFs } from './common/generateVestings'
 
@@ -39,19 +40,19 @@ export type OutputContribution = {
 const startBlock = '6965740';
 // At or around 05 August 2022, 18.00 (1 day before end of Basilisk parachain lease)
 const endBlock = '11501740';
-const triple = true;
 
 function main() {
   const rewardsData: RewardsData[] = normalizeRewardsData();
 
-  generateVestingsAndWriteToFs(rewardsData, startBlock, endBlock, triple, 'snek');
+  generateVestingsAndWriteToFs(rewardsData, startBlock, endBlock, 'snek');
 }
 
+// Normalizes rewards data and triples
 function normalizeRewardsData(): RewardsData[] {
   return (bsxCrowdloanData as Report).rewards.map(reward => {
     let data: RewardsData = {
       address: reward.address,
-      totalRewards: reward.totalHdxReward
+      totalRewards: new BigNumber(reward.totalHdxReward).multipliedBy(3).toString()
     };
 
     return data;

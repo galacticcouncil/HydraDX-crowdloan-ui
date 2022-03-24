@@ -1,7 +1,6 @@
 // Generates vesting schedules for the HDX rewards for participants in Hydra crowdloan
 
 import BigNumber from "bignumber.js"
-import _ from 'lodash'
 import hdxCrowdloanData from '../data/hdx-raw-rewards-hydra-crowdloan.json'
 import { RewardsData, generateVestingsAndWriteToFs } from './common/generateVestings'
 
@@ -35,32 +34,20 @@ const triple = false;
 function main() {
   let rewardsData: RewardsData[] = normalizeRewardsData();
 
-  generateVestingsAndWriteToFs(rewardsData, startBlock, endBlock, triple, 'hydra');
+  generateVestingsAndWriteToFs(rewardsData, startBlock, endBlock, 'hydra');
 }
 
 function normalizeRewardsData(): RewardsData[] {
   const crowdloanContribs = (hdxCrowdloanData as hydraCrowdloanContributions).data.accounts;
-  const groupedContributors = _.groupBy(crowdloanContribs, contrib => contrib.accountId);
 
-  let rewardsData: RewardsData[] = []
-
-  _.flatMap(groupedContributors, function(contributors, k) {
-    _.flatMap(contributors, function(contributor, k2) {
-      let rewards = new BigNumber(0);
-      _.flatMap(contributor.contributions, function(contribution) {
-        rewards = rewards.plus(new BigNumber(contribution.contributionReward));
-      });
-
-      let individualRewardsData: RewardsData = {
-        address: k,
-        totalRewards: rewards.toString()
-      }
-
-      rewardsData.push(individualRewardsData);
-    });
+  return crowdloanContribs.flatMap(function(contributor) {  
+    return {
+      address: contributor.accountId,
+      totalRewards: contributor.contributions.map(function(contrib) {
+        return new BigNumber(contrib.contributionReward)
+      }).reduce((sum, current) => sum.plus(current)).toString()
+    }
   });
-
-  return rewardsData;
 }
 
 

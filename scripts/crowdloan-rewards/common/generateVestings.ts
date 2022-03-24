@@ -9,7 +9,6 @@ export type RewardsData = {
     totalRewards: string
 }
 
-
 export type DynamicVestingInfo = {
   destination: string,
   schedule: {
@@ -25,24 +24,19 @@ export const generateVestingsAndWriteToFs = function(
     rewards: RewardsData[],
     startBlock: string,
     endBlock: string,
-    triple: boolean,
     prefix: string
 ) {
     log(`Generating vesting schedules for ${prefix} crowdloaners`);
 
-    let totalRewards = new BigNumber(0);
-
     let vestingsData = rewards.flatMap(rewardData => {
         let rewards = new BigNumber(rewardData.totalRewards);
-        rewards = triple ? rewards.multipliedBy(3) : rewards;
-
-        totalRewards = totalRewards.plus(rewards);
 
         return generateVestings(startBlock, endBlock, rewardData.address, rewards);
     });
 
+    let totalRewardsBefore = calculateTotalRewardsBefore(rewards);
     let totalVestedRewards = calculateTotalVestedRewards(vestingsData);
-    validateRewards(totalRewards, totalVestedRewards);
+    validateVestingsData(totalRewardsBefore, totalVestedRewards);
 
     const vestingsPath = `./data/hdx-vesting-${prefix}-crowdloan.json`
     const totalRewardsPath = `./data/hdx-total-rewards-${prefix}-crowdloan.json`
@@ -101,6 +95,12 @@ const generateVestings = function(
     ]
 };
 
+function calculateTotalRewardsBefore(rewards: RewardsData[]) {
+    return rewards.map(function(reward) {
+        return new BigNumber(reward.totalRewards)
+    }).reduce((sum, current) => sum.plus(current)) 
+}
+
 function calculateTotalVestedRewards(vestingsData: DynamicVestingInfo[]): BigNumber {
     return vestingsData.map(
         vesting => new BigNumber(vesting.schedule.per_period)
@@ -108,7 +108,7 @@ function calculateTotalVestedRewards(vestingsData: DynamicVestingInfo[]): BigNum
     ).reduce((sum, current) => sum.plus(new BigNumber(current)));
 }
 
-function validateRewards(totalRewards: BigNumber, totalVestedRewards: BigNumber) {
+function validateVestingsData(totalRewards: BigNumber, totalVestedRewards: BigNumber) {
     const differenceInRewards = totalVestedRewards.minus(totalRewards).absoluteValue();
     
     // There will always be a small difference in total rewards due to rounding
