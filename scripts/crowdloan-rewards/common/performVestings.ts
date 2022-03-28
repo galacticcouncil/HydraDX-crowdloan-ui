@@ -51,7 +51,10 @@ export async function performVestingCall(vestings: DynamicVestingInfo[]): Promis
   log(`connected to ${RPC} (${chain} ${nodeVersion})`);
   log(`rewards account: ${VESTINGS_ACCOUNT}`);
 
-  const vestingSchedules = vestings.map(({destination, schedule}) =>
+  const startFrom = Number(process.argv[2]) || 0;
+  log(`starting from vesting index ${startFrom}`);
+
+  const vestingSchedules = vestings.slice(startFrom).map(({destination, schedule}) =>
     api.tx.sudo.sudoAs(VESTINGS_ACCOUNT, api.tx.vesting.vestedTransfer(destination, schedule))
   );
 
@@ -87,13 +90,12 @@ export async function performVestingCall(vestings: DynamicVestingInfo[]): Promis
     log('run "npm start" to send tx')
     process.exit()
   }
-  const startFrom = Number(process.argv[2]) || 0;
 
   log("sending txs");
 
   let totalEndowed = new BN(0);
 
-  for (let i = startFrom; i < chunks.length; i++) {
+  for (let i = 0; i < chunks.length; i++) {
     log(`batch ${i}`);
 
     const response: any = await sendAndWaitFinalization({
