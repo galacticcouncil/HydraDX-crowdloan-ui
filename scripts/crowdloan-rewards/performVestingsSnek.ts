@@ -3,16 +3,13 @@ const vestingsSnek = require("../data/hdx-vesting-snek-crowdloan.json");
 const totalRewardsSnek = require("../data/hdx-total-rewards-snek-crowdloan.json");
 import { log, performVestingCall } from './common/performVestings';
 
-function main() {
+async function main() {
   let totalRewards = new BN(totalRewardsSnek.total_rewards);
-  performVestingCall(vestingsSnek, totalRewards);
+  await performVestingCall(vestingsSnek, totalRewards);
 }
 
-try {
-  log('Performing batch vesting call for Snek crowdloaners');
-
-  main();
-} catch(e) {
-  console.log(e)
-  process.exit()
-}
+main()
+  .catch(e => {
+    log(e);
+    process.exit(1);
+  });
