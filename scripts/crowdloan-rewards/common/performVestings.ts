@@ -7,6 +7,7 @@ const assert = require("assert");
 
 import { DynamicVestingInfo } from './generateVestings'
 
+const HDX = new BN(1_000_000_000_000);
 const ACCOUNT_SECRET = process.env.ACCOUNT_SECRET || "//Alice";
 const RPC = process.env.RPC_SERVER || "ws://127.0.0.1:9988";
 
@@ -36,7 +37,10 @@ const sendAndWaitFinalization = ({from, tx, printEvents = []}) => new Promise(re
   })
 );
 
-export async function performVestingCall(vestings: DynamicVestingInfo[]): Promise<any> {
+export async function performVestingCall(
+  vestings: DynamicVestingInfo[],
+  totalRewards: typeof BN
+): Promise<any> {
   await cryptoWaitReady();
   const provider = new WsProvider(RPC);
   const api = await ApiPromise.create({provider});
@@ -50,6 +54,26 @@ export async function performVestingCall(vestings: DynamicVestingInfo[]): Promis
 
   log(`connected to ${RPC} (${chain} ${nodeVersion})`);
   log(`rewards account: ${VESTINGS_ACCOUNT}`);
+
+  // If running for the first time, we want to mint tokens to the vetings acc
+  if (process.argv[2] === undefined) {
+    // Accounting for existential deposit of 1 HDX
+    const mintedAmount = totalRewards.add(HDX);
+    
+    log(`minting ${mintedAmount} to vestings acc`);
+
+    let mintToVestingsAcc = api.tx.sudo.sudo(
+      api.tx.balances.setBalance(VESTINGS_ACCOUNT, mintedAmount, 0)
+    );
+
+    await sendAndWaitFinalization({
+      from: sendFrom,
+      tx: mintToVestingsAcc,
+    }).catch(e => {
+      log(e);
+      process.exit(1);
+    });
+  }
 
   const startFrom = Number(process.argv[2]) || 0;
   log(`starting from vesting index ${startFrom}`);

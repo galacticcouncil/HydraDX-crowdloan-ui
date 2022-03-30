@@ -1,8 +1,11 @@
+const BN = require("bn.js");
 const vestingsHydra = require("../data/hdx-vesting-hydra-crowdloan.json");
+const totalRewardsHydra = require("../data/hdx-total-rewards-hydra-crowdloan.json");
 import { log, performVestingCall } from './common/performVestings';
 
 function main() {
-  performVestingCall(vestingsHydra);
+  let totalRewards = new BN(totalRewardsHydra.total_rewards);
+  performVestingCall(vestingsHydra, totalRewards);
 }
 
 try {
